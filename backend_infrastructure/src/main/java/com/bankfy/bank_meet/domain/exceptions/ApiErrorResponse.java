@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Builder
 public class ApiErrorResponse {
     private String error;
-    private String message;
+    private Object message;
     private int status;
     private LocalDateTime timestamp;
 }

@@ -4,7 +4,7 @@ import com.bankfy.bank_meet.domain.models.Cliente;
 import com.bankfy.bank_meet.domain.ports.in.CreateClienteUseCase;
 import com.bankfy.bank_meet.infrastructure.output.ClienteRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder; // Importamos el encoder
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,19 +13,17 @@ public class CreateClienteService implements CreateClienteUseCase {
 
     private final ClienteRepository clienteRepository;
     private final IdGeneratorService idGenerator;
-    private final PasswordEncoder passwordEncoder; // Inyectamos el encoder
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Cliente execute(Cliente cliente) {
-        // 1. Generación de ID Automático (el que ya hicimos)
         cliente.setClienteId(idGenerator.generateNumericId());
 
-        // 2. CIFRADO DE CONTRASEÑA (Seguridad estricta)
-        // Convertimos "Secreto123" en un hash ilegible como "$2a$10$..."
         String encodedPassword = passwordEncoder.encode(cliente.getContrasena());
         cliente.setContrasena(encodedPassword);
 
-        // 3. Persistencia
+        cliente.setEstado(true);
+
         return clienteRepository.save(cliente);
     }
 }

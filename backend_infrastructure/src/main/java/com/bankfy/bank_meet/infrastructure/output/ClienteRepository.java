@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
-    // Spring Boot hará toda la magia de los SELECT, INSERT, UPDATE
     Page<Cliente> findByNombreContainingIgnoreCaseOrIdentificacionContaining(
-        String nombre, String identificacion, Pageable pageable);
+            String nombre, String identificacion, Pageable pageable);
 }
