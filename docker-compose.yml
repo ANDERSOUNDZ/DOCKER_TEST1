@@ -1,0 +1,61 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    container_name: bank_db
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bank_meet -d db_bank"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_DB: db_bank
+      POSTGRES_USER: bank_meet
+      POSTGRES_PASSWORD: BankMeet2024!
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend_infrastructure
+    container_name: bank_backend
+    volumes:
+      - ./backend_infrastructure:/app
+    ports:
+      - "9090:9090"
+    depends_on:
+      - db
+    command: mvn spring-boot:run -Dspring-boot.run.arguments="--server.port=9090"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/db_bank
+      SPRING_DATASOURCE_USERNAME: bank_meet
+      SPRING_DATASOURCE_PASSWORD: BankMeet2024!
+
+  frontend:
+    build: ./frontend_infrastructure
+    container_name: bank_frontend
+    ports:
+      - "90:80"
+    depends_on:
+      - backend
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: BankMeet2024!
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+volumes:
+  db_data:
+  pgadmin_data:

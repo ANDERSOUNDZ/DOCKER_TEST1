@@ -1,0 +1,14 @@
+package com.bankfy.bank_meet.infrastructure.output;
+
+import com.bankfy.bank_meet.domain.models.Cliente;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+@Repository
+public interface ClienteRepository extends JpaRepository<Cliente, Long> {
+    // Spring Boot hará toda la magia de los SELECT, INSERT, UPDATE
+    Page<Cliente> findByNombreContainingIgnoreCaseOrIdentificacionContaining(
+        String nombre, String identificacion, Pageable pageable);
+}
