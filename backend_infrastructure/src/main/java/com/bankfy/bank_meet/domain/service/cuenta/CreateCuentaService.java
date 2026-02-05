@@ -1,6 +1,7 @@
 package com.bankfy.bank_meet.domain.service.cuenta;
 
 import com.bankfy.bank_meet.domain.exceptions.ValidationException;
+import com.bankfy.bank_meet.domain.models.Cliente;
 import com.bankfy.bank_meet.domain.models.Cuenta;
 import com.bankfy.bank_meet.domain.ports.in.cuenta.CreateCuentaUseCase;
 import com.bankfy.bank_meet.domain.service.IdGeneratorService;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -25,66 +27,48 @@ public class CreateCuentaService implements CreateCuentaUseCase {
     public Cuenta execute(Cuenta cuenta) {
         Map<String, String> errores = new HashMap<>();
 
-        validarTipoDeCuenta(cuenta.getTipoCuenta(), errores);
+        // Uso de Optional y lambdas para validar cliente
+        Optional.ofNullable(cuenta.getCliente())
+                .map(Cliente::getId)
+                .ifPresentOrElse(
+                        id -> {
+                            if (!clienteRepository.existsById(id)) {
+                                errores.put("cliente", "ID " + id + " no existe.");
+                            } else {
+                                validarNegocio(cuenta, errores, id);
+                            }
+                        },
+                        () -> errores.put("cliente", "Debe especificar un cliente."));
 
-        if (cuenta.getCliente() != null && cuenta.getCliente().getId() != null) {
-            Long clienteId = cuenta.getCliente().getId();
-
-            if (!clienteRepository.existsById(clienteId)) {
-                errores.put("cliente", "El cliente con ID " + clienteId + " no existe.");
-            } else {
-                validarLimitesDeCuenta(clienteId, cuenta.getTipoCuenta(), errores);
-
-                boolean yaTieneEseTipo = cuentaRepository.existsByClienteIdAndTipoCuenta(clienteId,
-                        cuenta.getTipoCuenta());
-
-                cuenta.setEstado(!yaTieneEseTipo);
-            }
-        }
-
-        if (!errores.isEmpty()) {
+        if (!errores.isEmpty())
             throw new ValidationException(errores);
-        }
 
         cuenta.setNumeroCuenta(generarNumeroUnico());
         return cuentaRepository.save(cuenta);
     }
 
-    private void validarTipoDeCuenta(String tipo, Map<String, String> errores) {
-        if (tipo == null || tipo.isBlank())
-            return;
+    private void validarNegocio(Cuenta cuenta, Map<String, String> errores, Long clienteId) {
+        int limite = CuentaLimitStrategy.getLimit(cuenta.getTipoCuenta()); // Patrón Strategy
 
-        List<String> validos = List.of("Ahorros", "Corriente", "Ahorro Programado", "Poliza");
-        if (!validos.contains(tipo)) {
-            errores.put("tipoCuenta", "Tipo de cuenta no permitido. Opciones: " + validos);
+        if (limite == -1) {
+            errores.put("tipoCuenta", "Tipo no soportado.");
+            return;
         }
+
+        long actual = cuentaRepository.countByClienteIdAndTipoCuenta(clienteId, cuenta.getTipoCuenta());
+        if (actual >= limite) {
+            errores.put("tipoCuenta", "Límite de " + limite + " alcanzado.");
+        }
+
+        // Lógica de estado inicial
+        boolean yaTiene = cuentaRepository.existsByClienteIdAndTipoCuenta(clienteId, cuenta.getTipoCuenta());
+        cuenta.setEstado(!yaTiene);
     }
 
     private String generarNumeroUnico() {
-        String numero;
-        do {
-            numero = idGenerator.generateAccountNumber();
-        } while (cuentaRepository.existsByNumeroCuenta(numero));
-        return numero;
-    }
-
-    private void validarLimitesDeCuenta(Long clienteId, String tipoCuenta, Map<String, String> errores) {
-        if (tipoCuenta == null)
-            return;
-
-        long cantidadActual = cuentaRepository.countByClienteIdAndTipoCuenta(clienteId, tipoCuenta);
-
-        int limite = switch (tipoCuenta) {
-            case "Ahorros", "Corriente" -> 3;
-            case "Ahorro Programado", "Poliza" -> 5;
-            default -> -1;
-        };
-
-        if (limite == -1) {
-            errores.put("tipoCuenta", "El tipo de cuenta '" + tipoCuenta + "' no tiene límites configurados.");
-        } else if (cantidadActual >= limite) {
-            errores.put("tipoCuenta",
-                    "Límite alcanzado. Solo se permiten " + limite + " cuentas de tipo " + tipoCuenta);
-        }
+        return Stream.generate(idGenerator::generateAccountNumber)
+                .filter(num -> !cuentaRepository.existsByNumeroCuenta(num))
+                .findFirst()
+                .orElseThrow(); // Programación funcional con Stream
     }
 }

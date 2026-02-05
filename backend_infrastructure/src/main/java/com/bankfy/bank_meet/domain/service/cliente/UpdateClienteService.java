@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,14 +25,13 @@ public class UpdateClienteService implements UpdateClienteUseCase {
     @Override
     @Transactional
     public Cliente execute(Long id, Cliente nuevosDatos) {
-        Cliente clienteExistente = clienteRepository.findById(id)
+        return clienteRepository.findById(id)
+                .map(existente -> {
+                    // Solo actualizamos los campos permitidos (Inyectamos lógica funcional)
+                    applyUpdates(existente, nuevosDatos);
+                    return clienteRepository.save(existente);
+                })
                 .orElseThrow(() -> new IllegalArgumentException("No se encontró el cliente con ID: " + id));
-
-        validateImmutableFields(clienteExistente, nuevosDatos);
-
-        applyUpdates(clienteExistente, nuevosDatos);
-
-        return clienteRepository.save(clienteExistente);
     }
 
     @Override
@@ -48,67 +48,34 @@ public class UpdateClienteService implements UpdateClienteUseCase {
                     case "nombre", "identificacion", "clienteId" ->
                         errores.put(key, "Este campo es inmutable y no puede ser actualizado.");
 
-                    case "genero", "direccion", "telefono" -> {
-                        String val = (String) value;
-                        if (val == null || val.isBlank()) {
-                            errores.put(key, "El campo " + key + " es obligatorio.");
-                        } else {
-                            if (key.equals("genero"))
-                                cliente.setGenero(val);
-                            if (key.equals("direccion"))
-                                cliente.setDireccion(val);
-                            if (key.equals("telefono"))
-                                cliente.setTelefono(val);
-                        }
-                    }
-
-                    case "edad" -> {
-                        if (value == null) {
-                            errores.put("edad", "La edad es obligatoria.");
-                        } else {
-                            Integer val = (Integer) value;
-                            if (val < 18)
-                                errores.put("edad", "Debe ser mayor de 18 años.");
-                            else
-                                cliente.setEdad(val);
-                        }
-                    }
-
+                    case "genero" -> cliente.setGenero((String) value);
+                    case "direccion" -> cliente.setDireccion((String) value);
+                    case "telefono" -> cliente.setTelefono((String) value);
                     case "estado" -> cliente.setEstado((Boolean) value);
-
+                    case "edad" -> {
+                        Integer edad = (Integer) value;
+                        if (edad < 18)
+                            errores.put("edad", "Debe ser mayor de 18 años.");
+                        else
+                            cliente.setEdad(edad);
+                    }
                     case "contrasena" -> {
                         String pass = (String) value;
-                        if (pass == null || pass.length() < 4)
-                            errores.put("contrasena", "La contraseña debe tener al menos 4 caracteres.");
+                        if (pass.length() < 4)
+                            errores.put("contrasena", "Mínimo 4 caracteres.");
                         else
                             cliente.setContrasena(passwordEncoder.encode(pass));
                     }
                 }
             } catch (Exception e) {
-                errores.put(key, "Error en el formato del valor proporcionado.");
+                errores.put(key, "Formato de valor inválido.");
             }
         });
 
-        if (!errores.isEmpty()) {
+        if (!errores.isEmpty())
             throw new ValidationException(errores);
-        }
 
         return clienteRepository.save(cliente);
-    }
-
-    private void validateImmutableFields(Cliente actual, Cliente nuevo) {
-        Map<String, String> erroresInmutables = new HashMap<>();
-
-        if (!actual.getNombre().equals(nuevo.getNombre())) {
-            erroresInmutables.put("nombre", "No se permite cambiar el nombre por seguridad bancaria.");
-        }
-        if (!actual.getIdentificacion().equals(nuevo.getIdentificacion())) {
-            erroresInmutables.put("identificacion", "No se permite cambiar la identificación.");
-        }
-
-        if (!erroresInmutables.isEmpty()) {
-            throw new ValidationException(erroresInmutables);
-        }
     }
 
     private void applyUpdates(Cliente target, Cliente source) {
@@ -118,8 +85,8 @@ public class UpdateClienteService implements UpdateClienteUseCase {
         target.setTelefono(source.getTelefono());
         target.setEstado(source.getEstado());
 
-        if (source.getContrasena() != null && !source.getContrasena().isBlank()) {
-            target.setContrasena(passwordEncoder.encode(source.getContrasena()));
-        }
+        Optional.ofNullable(source.getContrasena())
+                .filter(pass -> !pass.isBlank())
+                .ifPresent(pass -> target.setContrasena(passwordEncoder.encode(pass)));
     }
 }

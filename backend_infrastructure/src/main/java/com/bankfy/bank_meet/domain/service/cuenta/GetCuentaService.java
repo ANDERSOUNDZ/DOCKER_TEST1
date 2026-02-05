@@ -37,9 +37,9 @@ public class GetCuentaService implements GetCuentaUseCase {
 
     @Override
     public List<Cuenta> getByClienteId(Long clienteId) {
+        // Mejoramos el uso de Stream y Lambdas
         return cuentaRepository.findAll().stream()
-                .filter(c -> c.getCliente().getId().equals(clienteId))
+                .filter(c -> c.getCliente() != null && clienteId.equals(c.getCliente().getId()))
                 .toList();
-
     }
 }

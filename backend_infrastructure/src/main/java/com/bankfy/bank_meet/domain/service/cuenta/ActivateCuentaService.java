@@ -10,22 +10,19 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class ActivateCuentaService implements ActivateCuentaUseCase {
-
     private final CuentaRepository cuentaRepository;
 
     @Override
     @Transactional
     public Cuenta execute(String numeroCuenta) {
-        Cuenta cuenta = cuentaRepository.findByNumeroCuenta(numeroCuenta)
-                .orElseThrow(
-                        () -> new IllegalArgumentException("No existe ninguna cuenta con el número: " + numeroCuenta));
-
-        if (Boolean.TRUE.equals(cuenta.getEstado())) {
-            throw new IllegalArgumentException("La cuenta " + numeroCuenta + " ya está activa.");
-        }
-
-        cuenta.setEstado(true);
-
-        return cuentaRepository.save(cuenta);
+        return cuentaRepository.findByNumeroCuenta(numeroCuenta)
+                .map(c -> {
+                    if (Boolean.TRUE.equals(c.getEstado())) {
+                        throw new IllegalArgumentException("La cuenta ya está activa.");
+                    }
+                    c.setEstado(true);
+                    return cuentaRepository.save(c);
+                })
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada."));
     }
 }

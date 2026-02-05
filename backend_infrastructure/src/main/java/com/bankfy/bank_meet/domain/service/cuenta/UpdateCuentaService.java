@@ -4,11 +4,13 @@ import com.bankfy.bank_meet.domain.exceptions.ValidationException;
 import com.bankfy.bank_meet.domain.models.Cuenta;
 import com.bankfy.bank_meet.domain.ports.in.cuenta.UpdateCuentaUseCase;
 import com.bankfy.bank_meet.infrastructure.output.CuentaRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -25,16 +27,24 @@ public class UpdateCuentaService implements UpdateCuentaUseCase {
 
         Map<String, String> errores = new HashMap<>();
 
-        if (!cuentaExistente.getSaldoInicial().equals(nuevosDatos.getSaldoInicial())) {
-            errores.put("saldoInicial", "El saldo solo puede ser modificado mediante transacciones/movimientos.");
+        // Validación de inmutabilidad
+        if (nuevosDatos.getSaldoInicial() != null
+                && !cuentaExistente.getSaldoInicial().equals(nuevosDatos.getSaldoInicial())) {
+            errores.put("saldoInicial", "El saldo solo se modifica mediante transacciones.");
         }
-        if (!cuentaExistente.getTipoCuenta().equals(nuevosDatos.getTipoCuenta())) {
-            errores.put("tipoCuenta", "No se permite el cambio de tipo de cuenta. Debe abrir una nueva.");
+        if (nuevosDatos.getTipoCuenta() != null
+                && !cuentaExistente.getTipoCuenta().equals(nuevosDatos.getTipoCuenta())) {
+            errores.put("tipoCuenta", "No se permite cambiar el tipo de cuenta.");
         }
-        
-        if (!errores.isEmpty()) throw new ValidationException(errores);
 
-        return cuentaExistente; 
+        if (!errores.isEmpty())
+            throw new ValidationException(errores);
+
+        // En una cuenta bancaria, usualmente el PUT no cambia nada más que quizás
+        // metadatos
+        // (si existieran), por ahora devolvemos la existente ya que el resto es
+        // inmutable.
+        return cuentaExistente;
     }
 
     @Override
@@ -43,23 +53,27 @@ public class UpdateCuentaService implements UpdateCuentaUseCase {
         Cuenta cuenta = cuentaRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
 
+        // Definimos campos prohibidos
+        List<String> inmutables = List.of("id", "numeroCuenta", "cliente", "saldoInicial", "tipoCuenta", "estado");
         Map<String, String> errores = new HashMap<>();
 
-        updates.forEach((key, value) -> {
-            switch (key) {
-                case "id", "numeroCuenta", "cliente", "saldoInicial", "tipoCuenta" -> 
-                    errores.put(key, "Este campo es inmutable por razones de seguridad financiera.");
-                
-                case "estado" -> {
-                    errores.put(key, "Use los endpoints específicos de /activar o /desactivar.");
-                }
-                
-                default -> errores.put(key, "El campo no existe o no se permite su edición manual.");
-            }
-        });
+        // Uso de lambdas y streams para validar las llaves del Map
+        updates.keySet().stream()
+                .filter(inmutables::contains)
+                .forEach(key -> {
+                    if (key.equals("estado")) {
+                        errores.put(key, "Use los endpoints específicos de /activar o /desactivar.");
+                    } else {
+                        errores.put(key, "Este campo es inmutable por seguridad financiera.");
+                    }
+                });
 
-        if (!errores.isEmpty()) throw new ValidationException(errores);
-        
+        if (!errores.isEmpty())
+            throw new ValidationException(errores);
+
+        // Si pasara las validaciones, aquí se aplicarían los cambios con Reflection o
+        // setters
+        // Pero según tu lógica actual, nada es editable manualmente.
         return cuentaRepository.save(cuenta);
     }
 }

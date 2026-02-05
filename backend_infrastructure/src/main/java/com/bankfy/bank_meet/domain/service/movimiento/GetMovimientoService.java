@@ -16,18 +16,26 @@ public class GetMovimientoService implements GetMovimientoUseCase {
 
     @Override
     public List<Movimientos> obtenerPorFiltros(Long clienteId, String fechaInicio, String fechaFin) {
-        if (clienteId == null && fechaInicio == null && fechaFin == null) {
+        // 1. Manejo de fechas con valores por defecto (Evitamos NullPointer)
+        LocalDateTime inicio = (fechaInicio != null)
+                ? LocalDateTime.parse(fechaInicio)
+                : LocalDateTime.now().minusDays(30);
+
+        LocalDateTime fin = (fechaFin != null)
+                ? LocalDateTime.parse(fechaFin)
+                : LocalDateTime.now();
+
+        // 2. Lógica de consulta filtrada
+        if (clienteId == null) {
             return movimientosRepository.findAll();
         }
-        LocalDateTime inicio = (fechaInicio != null) ? LocalDateTime.parse(fechaInicio)
-                : LocalDateTime.now().minusDays(30);
-        LocalDateTime fin = (fechaFin != null) ? LocalDateTime.parse(fechaFin) : LocalDateTime.now();
+
         return movimientosRepository.findByClienteAndFechaRange(clienteId, inicio, fin);
     }
 
     @Override
     public Movimientos obtenerPorId(Long id) {
         return movimientosRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("No existe el movimiento"));
+                .orElseThrow(() -> new IllegalArgumentException("Movimiento no encontrado con ID: " + id));
     }
 }

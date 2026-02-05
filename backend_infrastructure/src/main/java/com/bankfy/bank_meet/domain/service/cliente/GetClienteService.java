@@ -25,7 +25,7 @@ public class GetClienteService implements GetClienteUseCase {
     @Override
     @Transactional(readOnly = true)
     public Page<Cliente> getAll(String search, Pageable pageable) {
-        if (search != null && !search.isEmpty()) {
+        if (search != null && !search.isBlank()) {
             return clienteRepository.findByNombreContainingIgnoreCaseOrIdentificacionContaining(
                     search, search, pageable);
         }
