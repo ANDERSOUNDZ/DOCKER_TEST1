@@ -1,8 +1,8 @@
 package com.bankfy.bank_meet.infrastructure.adapters.input.controllers;
 
 import com.bankfy.bank_meet.application.ports.input.cliente.*;
-import com.bankfy.bank_meet.domain.models.BaseResponse;
-import com.bankfy.bank_meet.domain.models.Cliente;
+import com.bankfy.bank_meet.domain.models.cliente.Cliente;
+import com.bankfy.bank_meet.infrastructure.adapters.input.dtos.BaseResponse;
 import com.bankfy.bank_meet.infrastructure.adapters.input.dtos.cliente.ClienteRequestDTO;
 import com.bankfy.bank_meet.infrastructure.adapters.input.dtos.cliente.ClienteResponseDTO;
 import com.bankfy.bank_meet.infrastructure.adapters.input.dtos.cliente.ClienteUpdateDTO;

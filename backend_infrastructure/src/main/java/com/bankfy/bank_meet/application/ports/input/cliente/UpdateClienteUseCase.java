@@ -2,7 +2,7 @@ package com.bankfy.bank_meet.application.ports.input.cliente;
 
 import java.util.Map;
 
-import com.bankfy.bank_meet.domain.models.Cliente;
+import com.bankfy.bank_meet.domain.models.cliente.Cliente;
 
 public interface UpdateClienteUseCase {
     Cliente execute(Long id, Cliente cliente);

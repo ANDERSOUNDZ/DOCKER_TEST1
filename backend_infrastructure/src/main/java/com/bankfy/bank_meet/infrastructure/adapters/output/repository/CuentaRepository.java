@@ -1,11 +1,11 @@
 package com.bankfy.bank_meet.infrastructure.adapters.output.repository;
 
-import com.bankfy.bank_meet.domain.models.Cuenta;
-
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.bankfy.bank_meet.domain.models.cuenta.Cuenta;
 
 @Repository
 public interface CuentaRepository extends JpaRepository<Cuenta, Long> {

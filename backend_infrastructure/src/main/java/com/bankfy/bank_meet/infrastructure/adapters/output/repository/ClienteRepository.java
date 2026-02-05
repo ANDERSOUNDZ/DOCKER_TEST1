@@ -1,8 +1,10 @@
 package com.bankfy.bank_meet.infrastructure.adapters.output.repository;
 
-import com.bankfy.bank_meet.domain.models.Cliente;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.bankfy.bank_meet.domain.models.cliente.Cliente;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

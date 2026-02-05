@@ -1,4 +1,4 @@
-package com.bankfy.bank_meet.domain.models;
+package com.bankfy.bank_meet.domain.models.cliente;
 
 import jakarta.persistence.*;
 import lombok.Data;

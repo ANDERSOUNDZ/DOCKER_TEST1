@@ -2,7 +2,7 @@ package com.bankfy.bank_meet.infrastructure.adapters.input.exceptions;
 
 import com.bankfy.bank_meet.domain.exceptions.ErrorMessages;
 import com.bankfy.bank_meet.domain.exceptions.ValidationException;
-import com.bankfy.bank_meet.domain.models.BaseResponse;
+import com.bankfy.bank_meet.infrastructure.adapters.input.dtos.BaseResponse;
 import com.bankfy.bank_meet.infrastructure.adapters.input.dtos.error.ApiErrorResponse;
 
 import org.springframework.dao.DataIntegrityViolationException;

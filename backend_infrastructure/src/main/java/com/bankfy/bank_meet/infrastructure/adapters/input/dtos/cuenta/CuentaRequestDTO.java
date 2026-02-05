@@ -1,7 +1,8 @@
 package com.bankfy.bank_meet.infrastructure.adapters.input.dtos.cuenta;
 
-import com.bankfy.bank_meet.domain.models.Cliente;
-import com.bankfy.bank_meet.domain.models.Cuenta;
+import com.bankfy.bank_meet.domain.models.cliente.Cliente;
+import com.bankfy.bank_meet.domain.models.cuenta.Cuenta;
+
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 

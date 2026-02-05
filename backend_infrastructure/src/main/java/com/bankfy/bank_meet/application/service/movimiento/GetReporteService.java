@@ -3,9 +3,9 @@ package com.bankfy.bank_meet.application.service.movimiento;
 import com.bankfy.bank_meet.application.ports.input.movimiento.GetReporteUseCase;
 import com.bankfy.bank_meet.application.ports.output.cliente.ClientePersistencePort;
 import com.bankfy.bank_meet.application.ports.output.movimiento.MovimientoPersistencePort;
-import com.bankfy.bank_meet.domain.models.Cliente;
-import com.bankfy.bank_meet.domain.models.Movimiento;
-import com.bankfy.bank_meet.domain.models.ReporteEstadoCuenta;
+import com.bankfy.bank_meet.domain.models.cliente.Cliente;
+import com.bankfy.bank_meet.domain.models.movimiento.Movimiento;
+import com.bankfy.bank_meet.infrastructure.adapters.input.dtos.movimiento.ReporteEstadoCuentaDTO;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
@@ -27,7 +27,7 @@ public class GetReporteService implements GetReporteUseCase {
     private final ClientePersistencePort clientePersistencePort;
 
     @Override
-    public ReporteEstadoCuenta generarReporte(Long idPersona, LocalDateTime inicio, LocalDateTime fin) {
+    public ReporteEstadoCuentaDTO generarReporte(Long idPersona, LocalDateTime inicio, LocalDateTime fin) {
         Cliente cliente = clientePersistencePort.findById(idPersona)
                 .orElseThrow(() -> new IllegalArgumentException("Cliente no existe."));
 
@@ -45,7 +45,7 @@ public class GetReporteService implements GetReporteUseCase {
 
         String pdfBase64 = generarPdfBase64(movs, cliente.getNombre(), inicio, fin);
 
-        return ReporteEstadoCuenta.builder()
+        return ReporteEstadoCuentaDTO.builder()
                 .cliente(cliente.getNombre())
                 .rangoFechas(inicio.toLocalDate() + " a " + fin.toLocalDate())
                 .movimientos(movs)

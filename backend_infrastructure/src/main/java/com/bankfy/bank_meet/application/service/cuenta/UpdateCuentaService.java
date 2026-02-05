@@ -3,7 +3,7 @@ package com.bankfy.bank_meet.application.service.cuenta;
 import com.bankfy.bank_meet.application.ports.input.cuenta.UpdateCuentaUseCase;
 import com.bankfy.bank_meet.application.ports.output.cuenta.CuentaPersistencePort;
 import com.bankfy.bank_meet.domain.exceptions.ValidationException;
-import com.bankfy.bank_meet.domain.models.Cuenta;
+import com.bankfy.bank_meet.domain.models.cuenta.Cuenta;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

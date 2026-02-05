@@ -1,4 +1,4 @@
-package com.bankfy.bank_meet.domain.models;
+package com.bankfy.bank_meet.domain.models.movimiento;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.bankfy.bank_meet.domain.models.cuenta.Cuenta;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -1,4 +1,4 @@
-package com.bankfy.bank_meet.domain.models;
+package com.bankfy.bank_meet.infrastructure.adapters.input.dtos;
 
 import lombok.Builder;
 import lombok.Data;

@@ -5,8 +5,9 @@ import com.bankfy.bank_meet.application.ports.output.cuenta.CuentaPersistencePor
 import com.bankfy.bank_meet.application.ports.output.cliente.ClientePersistencePort;
 import com.bankfy.bank_meet.application.service.config.IdGeneratorService;
 import com.bankfy.bank_meet.domain.exceptions.ValidationException;
-import com.bankfy.bank_meet.domain.models.Cliente;
-import com.bankfy.bank_meet.domain.models.Cuenta;
+import com.bankfy.bank_meet.domain.models.cliente.Cliente;
+import com.bankfy.bank_meet.domain.models.cuenta.Cuenta;
+import com.bankfy.bank_meet.domain.models.cuenta.CuentaLimitStrategy;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

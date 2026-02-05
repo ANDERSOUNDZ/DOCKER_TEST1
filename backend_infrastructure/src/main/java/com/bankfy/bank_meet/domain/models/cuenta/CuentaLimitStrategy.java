@@ -1,4 +1,4 @@
-package com.bankfy.bank_meet.application.service.cuenta;
+package com.bankfy.bank_meet.domain.models.cuenta;
 
 import java.util.Map;
 

@@ -2,7 +2,7 @@ package com.bankfy.bank_meet.application.service.cuenta;
 
 import com.bankfy.bank_meet.application.ports.input.cuenta.GetCuentaUseCase;
 import com.bankfy.bank_meet.application.ports.output.cuenta.CuentaPersistencePort;
-import com.bankfy.bank_meet.domain.models.Cuenta;
+import com.bankfy.bank_meet.domain.models.cuenta.Cuenta;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

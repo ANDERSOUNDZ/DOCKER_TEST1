@@ -1,4 +1,4 @@
-package com.bankfy.bank_meet.domain.models;
+package com.bankfy.bank_meet.domain.models.cuenta;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.EqualsAndHashCode;
 import java.math.BigDecimal;
+
+import com.bankfy.bank_meet.domain.models.cliente.Cliente;
 
 @Data
 @NoArgsConstructor

@@ -3,7 +3,7 @@ package com.bankfy.bank_meet.application.service.cliente;
 import com.bankfy.bank_meet.application.ports.input.cliente.CreateClienteUseCase;
 import com.bankfy.bank_meet.application.ports.output.cliente.ClientePersistencePort;
 import com.bankfy.bank_meet.application.service.config.IdGeneratorService;
-import com.bankfy.bank_meet.domain.models.Cliente;
+import com.bankfy.bank_meet.domain.models.cliente.Cliente;
 
 import lombok.RequiredArgsConstructor;
 

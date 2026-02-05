@@ -2,7 +2,7 @@ package com.bankfy.bank_meet.application.service.movimiento;
 
 import com.bankfy.bank_meet.application.ports.input.movimiento.GetMovimientoUseCase;
 import com.bankfy.bank_meet.application.ports.output.movimiento.MovimientoPersistencePort;
-import com.bankfy.bank_meet.domain.models.Movimiento;
+import com.bankfy.bank_meet.domain.models.movimiento.Movimiento;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

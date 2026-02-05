@@ -4,10 +4,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bankfy.bank_meet.domain.models.Cliente;
 import com.bankfy.bank_meet.application.ports.input.cliente.UpdateClienteUseCase;
 import com.bankfy.bank_meet.application.ports.output.cliente.ClientePersistencePort;
 import com.bankfy.bank_meet.domain.exceptions.ValidationException;
+import com.bankfy.bank_meet.domain.models.cliente.Cliente;
 
 import lombok.RequiredArgsConstructor;
 

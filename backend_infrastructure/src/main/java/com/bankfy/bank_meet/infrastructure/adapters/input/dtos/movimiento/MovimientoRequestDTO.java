@@ -1,7 +1,8 @@
 package com.bankfy.bank_meet.infrastructure.adapters.input.dtos.movimiento;
 
-import com.bankfy.bank_meet.domain.models.Cuenta;
-import com.bankfy.bank_meet.domain.models.Movimiento;
+import com.bankfy.bank_meet.domain.models.cuenta.Cuenta;
+import com.bankfy.bank_meet.domain.models.movimiento.Movimiento;
+
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 

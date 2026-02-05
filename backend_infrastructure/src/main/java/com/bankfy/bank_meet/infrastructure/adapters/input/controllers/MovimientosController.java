@@ -1,11 +1,11 @@
 package com.bankfy.bank_meet.infrastructure.adapters.input.controllers;
 
 import com.bankfy.bank_meet.application.ports.input.movimiento.*;
-import com.bankfy.bank_meet.domain.models.BaseResponse;
-import com.bankfy.bank_meet.domain.models.Movimiento;
-import com.bankfy.bank_meet.domain.models.ReporteEstadoCuenta;
+import com.bankfy.bank_meet.domain.models.movimiento.Movimiento;
+import com.bankfy.bank_meet.infrastructure.adapters.input.dtos.BaseResponse;
 import com.bankfy.bank_meet.infrastructure.adapters.input.dtos.movimiento.MovimientoRequestDTO;
 import com.bankfy.bank_meet.infrastructure.adapters.input.dtos.movimiento.MovimientoResponseDTO;
+import com.bankfy.bank_meet.infrastructure.adapters.input.dtos.movimiento.ReporteEstadoCuentaDTO;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -61,7 +61,7 @@ public class MovimientosController {
     }
 
     @GetMapping("/reporte")
-    public ResponseEntity<BaseResponse<ReporteEstadoCuenta>> generarReporte(
+    public ResponseEntity<BaseResponse<ReporteEstadoCuentaDTO>> generarReporte(
             @RequestParam Long clienteId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fin) {
@@ -69,7 +69,7 @@ public class MovimientosController {
         LocalDateTime fechaInicio = inicio.atStartOfDay();
         LocalDateTime fechaFin = fin.atTime(LocalTime.MAX);
 
-        ReporteEstadoCuenta reporte = getReporteUseCase.generarReporte(clienteId, fechaInicio, fechaFin);
+        ReporteEstadoCuentaDTO reporte = getReporteUseCase.generarReporte(clienteId, fechaInicio, fechaFin);
 
         return buildResponse("Reporte generado con éxito", reporte, HttpStatus.OK);
     }

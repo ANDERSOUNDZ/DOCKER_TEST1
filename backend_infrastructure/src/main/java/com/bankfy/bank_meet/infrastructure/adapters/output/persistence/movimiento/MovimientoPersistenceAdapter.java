@@ -1,7 +1,7 @@
 package com.bankfy.bank_meet.infrastructure.adapters.output.persistence.movimiento;
 
 import com.bankfy.bank_meet.application.ports.output.movimiento.MovimientoPersistencePort;
-import com.bankfy.bank_meet.domain.models.Movimiento;
+import com.bankfy.bank_meet.domain.models.movimiento.Movimiento;
 import com.bankfy.bank_meet.infrastructure.adapters.output.repository.MovimientosRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

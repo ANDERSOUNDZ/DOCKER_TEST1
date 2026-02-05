@@ -1,7 +1,7 @@
 package com.bankfy.bank_meet.infrastructure.adapters.output.persistence.cuenta;
 
 import com.bankfy.bank_meet.application.ports.output.cuenta.CuentaPersistencePort;
-import com.bankfy.bank_meet.domain.models.Cuenta;
+import com.bankfy.bank_meet.domain.models.cuenta.Cuenta;
 import com.bankfy.bank_meet.infrastructure.adapters.output.repository.CuentaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

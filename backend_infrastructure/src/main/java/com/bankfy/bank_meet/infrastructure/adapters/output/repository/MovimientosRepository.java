@@ -1,10 +1,11 @@
 package com.bankfy.bank_meet.infrastructure.adapters.output.repository;
 
-import com.bankfy.bank_meet.domain.models.Movimiento;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import com.bankfy.bank_meet.domain.models.movimiento.Movimiento;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

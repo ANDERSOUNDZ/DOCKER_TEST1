@@ -1,7 +1,7 @@
 package com.bankfy.bank_meet.infrastructure.adapters.output.persistence.cliente;
 
 import com.bankfy.bank_meet.application.ports.output.cliente.ClientePersistencePort;
-import com.bankfy.bank_meet.domain.models.Cliente;
+import com.bankfy.bank_meet.domain.models.cliente.Cliente;
 import com.bankfy.bank_meet.infrastructure.adapters.output.repository.ClienteRepository;
 
 import lombok.RequiredArgsConstructor;

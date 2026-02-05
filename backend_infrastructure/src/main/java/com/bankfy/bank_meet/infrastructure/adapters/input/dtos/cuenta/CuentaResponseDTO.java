@@ -1,7 +1,8 @@
 package com.bankfy.bank_meet.infrastructure.adapters.input.dtos.cuenta;
 
-import com.bankfy.bank_meet.domain.models.Cuenta;
 import java.math.BigDecimal;
+
+import com.bankfy.bank_meet.domain.models.cuenta.Cuenta;
 
 public record CuentaResponseDTO(
         Long id,

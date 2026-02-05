@@ -1,6 +1,6 @@
 package com.bankfy.bank_meet.infrastructure.adapters.input.dtos.movimiento;
 
-import com.bankfy.bank_meet.domain.models.Movimiento;
+import com.bankfy.bank_meet.domain.models.movimiento.Movimiento;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 

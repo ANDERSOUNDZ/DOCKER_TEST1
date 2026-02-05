@@ -1,6 +1,6 @@
 package com.bankfy.bank_meet.infrastructure.adapters.input.dtos.cliente;
 
-import com.bankfy.bank_meet.domain.models.Cliente;
+import com.bankfy.bank_meet.domain.models.cliente.Cliente;
 
 public record ClienteResponseDTO(
         Long id,
