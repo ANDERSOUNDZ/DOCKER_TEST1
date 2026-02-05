@@ -32,7 +32,7 @@ public class Cuenta {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cliente_id", nullable = false, updatable = false)
-    @ToString.Exclude          // <--- EVITA EL ERROR 500 EN SWAGGER
-    @EqualsAndHashCode.Exclude // <--- EVITA RECURSIÓN INFINITA
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Cliente cliente;
 }

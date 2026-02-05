@@ -10,7 +10,7 @@ import java.util.List;
 public class ReporteEstadoCuenta {
     private String cliente;
     private String rangoFechas;
-    private List<Movimientos> movimientos;
+    private List<Movimiento> movimientos;
     private BigDecimal totalCreditos;
     private BigDecimal totalDebitos;
     private String pdfBase64;
