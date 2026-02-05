@@ -10,10 +10,15 @@ import com.bankfy.bank_meet.infrastructure.input.dtos.movimiento.MovimientoRespo
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -63,11 +68,12 @@ public class MovimientosController {
     @GetMapping("/reporte")
     public ResponseEntity<BaseResponse<ReporteEstadoCuenta>> generarReporte(
             @RequestParam Long clienteId,
-            @RequestParam String inicio,
-            @RequestParam String fin) {
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fin) {
 
-        LocalDateTime fechaInicio = LocalDateTime.parse(inicio);
-        LocalDateTime fechaFin = LocalDateTime.parse(fin);
+        // Convertimos LocalDate a LocalDateTime (inicio y fin del día)
+        LocalDateTime fechaInicio = inicio.atStartOfDay();
+        LocalDateTime fechaFin = fin.atTime(LocalTime.MAX);
 
         ReporteEstadoCuenta reporte = getReporteUseCase.generarReporte(clienteId, fechaInicio, fechaFin);
 

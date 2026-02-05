@@ -74,7 +74,7 @@ public class CreateMovimientoService implements CreateMovimientoUseCase {
         if (acumuladoHoy == null)
             acumuladoHoy = BigDecimal.ZERO;
 
-        if (acumuladoHoy.add(montoARetirar).compareTo(LIMITE_DIARIO) > 1) {
+        if (acumuladoHoy.add(montoARetirar).compareTo(LIMITE_DIARIO) > 0) {
             throw new IllegalArgumentException("Cupo diario Excedido");
         }
     }

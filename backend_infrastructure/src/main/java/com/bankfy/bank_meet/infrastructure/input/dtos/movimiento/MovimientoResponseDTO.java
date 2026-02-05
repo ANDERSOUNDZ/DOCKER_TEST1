@@ -15,15 +15,17 @@ public record MovimientoResponseDTO(
         @JsonProperty("Saldo Disponible") BigDecimal saldoDisponible) {
     // EL "MAPPER" ESTÁ AQUÍ ADENTRO: Un constructor estático simple
     public static MovimientoResponseDTO fromEntity(Movimientos m) {
+        // Definimos el formato deseado
+        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
         return new MovimientoResponseDTO(
-                m.getFecha().toString(),
+                m.getFecha().format(formatter), // <-- Cambio aquí
                 m.getCuenta().getCliente().getNombre(),
                 m.getCuenta().getNumeroCuenta(),
                 m.getCuenta().getTipoCuenta(),
-                m.getSaldoAnterior(), // Lo que capturamos antes del movimiento
+                m.getSaldoAnterior(),
                 m.getCuenta().getEstado(),
                 m.getValor(),
-                m.getSaldo() // Saldo disponible después del movimiento
-        );
+                m.getSaldo());
     }
 }
