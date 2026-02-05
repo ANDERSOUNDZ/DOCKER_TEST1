@@ -1,4 +1,4 @@
-package com.bankfy.bank_meet.domain.ports.in;
+package com.bankfy.bank_meet.domain.ports.in.cuenta;
 
 import com.bankfy.bank_meet.domain.models.Cuenta;
 

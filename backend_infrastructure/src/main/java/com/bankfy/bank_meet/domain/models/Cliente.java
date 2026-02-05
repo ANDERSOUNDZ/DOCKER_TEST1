@@ -1,25 +1,25 @@
 package com.bankfy.bank_meet.domain.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import jakarta.validation.constraints.Size;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Entity
+@Table(name = "cliente")
 public class Cliente extends Persona {
-    private String clienteId; 
-    @NotBlank(message = "La contraseña no puede estar vacía")
-    @Size(min = 4, message = "La contraseña debe tener al menos 4 caracteres")
+
+    @Column(unique = true, nullable = false)
+    private String clienteId;
+
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Column(nullable = false)
     private String contrasena;
+
+    @Column(nullable = false)
     private Boolean estado;
 }

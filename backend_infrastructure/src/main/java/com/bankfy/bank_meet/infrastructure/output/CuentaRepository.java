@@ -13,5 +13,8 @@ public interface CuentaRepository extends JpaRepository<Cuenta, Long> {
 
     boolean existsByNumeroCuenta(String numeroCuenta);
 
+    boolean existsByClienteId(Long clienteId);
+
     boolean existsByClienteIdAndTipoCuenta(Long clienteId, String tipoCuenta);
+    long countByClienteIdAndTipoCuenta(Long clienteId, String tipoCuenta);
 }
