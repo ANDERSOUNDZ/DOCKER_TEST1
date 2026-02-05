@@ -5,6 +5,8 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.EqualsAndHashCode;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -26,10 +28,14 @@ public class Movimientos {
     @NotNull(message = "El valor es obligatorio")
     private BigDecimal valor;
 
-    private BigDecimal saldo;
+    private BigDecimal saldoAnterior;
+
+    private BigDecimal saldo; 
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cuenta_id", nullable = false)
     @NotNull(message = "El movimiento debe estar asociado a una cuenta")
+    @ToString.Exclude          // <--- EVITA EL ERROR 500 EN SWAGGER
+    @EqualsAndHashCode.Exclude // <--- EVITA RECURSIÓN INFINITA
     private Cuenta cuenta;
 }

@@ -14,17 +14,21 @@ import lombok.RequiredArgsConstructor;
 public class DeleteClienteService implements DeleteClienteUseCase {
 
     private final ClienteRepository clienteRepository;
-    private final CuentaRepository cuentaRepository; // Necesitamos verificar sus cuentas
+    private final CuentaRepository cuentaRepository;
 
     @Override
     @Transactional
     public void execute(Long id) {
+        // Validación de existencia: Si falla, el GlobalExceptionHandler captura la
+        // IllegalArgumentException
         if (!clienteRepository.existsById(id)) {
             throw new IllegalArgumentException("No se puede eliminar: El cliente con ID " + id + " no existe.");
         }
 
+        // Validación de reglas de negocio: No borrar clientes con cuentas
         if (cuentaRepository.existsByClienteId(id)) {
-            throw new IllegalArgumentException("No se puede eliminar el cliente: Tiene cuentas bancarias activas o registradas.");
+            throw new IllegalArgumentException(
+                    "No se puede eliminar el cliente: Tiene cuentas bancarias activas o registradas.");
         }
 
         clienteRepository.deleteById(id);

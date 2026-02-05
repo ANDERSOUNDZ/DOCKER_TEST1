@@ -1,6 +1,5 @@
 package com.bankfy.bank_meet.domain.service.cuenta;
 
-import com.bankfy.bank_meet.domain.models.Cuenta;
 import com.bankfy.bank_meet.domain.ports.in.cuenta.DeleteCuentaUseCase;
 import com.bankfy.bank_meet.infrastructure.output.CuentaRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,15 +15,15 @@ public class DeleteCuentaService implements DeleteCuentaUseCase {
     @Override
     @Transactional
     public void execute(Long id) {
-        Cuenta cuenta = cuentaRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("No se puede inactivar: Cuenta no encontrada."));
-
-        if (Boolean.FALSE.equals(cuenta.getEstado())) {
-            throw new IllegalArgumentException("La cuenta ya se encuentra inactiva.");
-        }
-
-        cuenta.setEstado(false);
-
-        cuentaRepository.save(cuenta);
+        // Uso de Optional y lambdas para manejar la lógica de estado
+        cuentaRepository.findById(id)
+            .map(cuenta -> {
+                if (Boolean.FALSE.equals(cuenta.getEstado())) {
+                    throw new IllegalArgumentException("La cuenta ya se encuentra inactiva.");
+                }
+                cuenta.setEstado(false);
+                return cuentaRepository.save(cuenta);
+            })
+            .orElseThrow(() -> new IllegalArgumentException("No se puede inactivar: Cuenta no encontrada con ID: " + id));
     }
 }

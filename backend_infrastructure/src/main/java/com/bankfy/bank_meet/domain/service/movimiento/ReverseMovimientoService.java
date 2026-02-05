@@ -18,16 +18,30 @@ public class ReverseMovimientoService implements ReverseMovimientoUseCase {
     @Override
     @Transactional
     public Movimientos execute(Long movimientoId) {
+        // 1. Obtener el movimiento original
         Movimientos original = movimientosRepository.findById(movimientoId)
-                .orElseThrow(() -> new IllegalArgumentException("Movimiento original no encontrado"));
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Movimiento original no encontrado con ID: " + movimientoId));
 
+        // 2. Validación de seguridad: No reversar algo ya reversado (Opcional pero
+        // recomendado)
+        if (original.getTipoMovimiento().startsWith("REVERSO")) {
+            throw new IllegalArgumentException("No se puede reversar un movimiento que ya es un reverso.");
+        }
+
+        // 3. Crear la contrapartida
         Movimientos reverso = new Movimientos();
         reverso.setTipoMovimiento("REVERSO - " + original.getTipoMovimiento());
 
+        // Invertimos el valor: Si era -50 (Retiro), ahora es +50. Si era +100
+        // (Depósito), ahora es -100.
         reverso.setValor(original.getValor().negate());
 
+        // Asociamos la misma cuenta
         reverso.setCuenta(original.getCuenta());
 
+        // 4. Delegamos al Create: Esto actualiza el saldo de la cuenta y guarda el
+        // nuevo movimiento
         return createMovimientoUseCase.execute(reverso);
     }
 }
