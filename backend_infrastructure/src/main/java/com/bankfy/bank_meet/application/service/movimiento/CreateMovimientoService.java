@@ -72,7 +72,9 @@ public class CreateMovimientoService implements CreateMovimientoUseCase {
                 cuenta.getCliente().getId(), inicio, fin);
 
         if (acumuladoHoy.add(monto).compareTo(LIMITE_DIARIO) > 0) {
-            throw new IllegalArgumentException("Cupo diario Excedido");
+            throw new com.bankfy.bank_meet.domain.exceptions.ValidationException(
+                    "Cupo diario excedido",
+                    java.util.Map.of("movimiento", "El límite diario de 1000 ha sido superado"));
         }
     }
 

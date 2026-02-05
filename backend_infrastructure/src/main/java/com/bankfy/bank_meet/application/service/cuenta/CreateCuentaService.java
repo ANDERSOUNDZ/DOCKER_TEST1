@@ -41,8 +41,9 @@ public class CreateCuentaService implements CreateCuentaUseCase {
                         },
                         () -> errores.put("cliente", "Debe especificar un cliente."));
 
-        if (!errores.isEmpty())
-            throw new ValidationException(errores);
+        if (!errores.isEmpty()) {
+            throw new ValidationException("Error en la creación de cuenta", errores);
+        }
 
         cuenta.setNumeroCuenta(generarNumeroUnico());
         return cuentaPersistencePort.save(cuenta);

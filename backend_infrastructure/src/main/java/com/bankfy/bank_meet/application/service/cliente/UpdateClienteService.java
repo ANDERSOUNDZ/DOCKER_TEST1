@@ -71,8 +71,9 @@ public class UpdateClienteService implements UpdateClienteUseCase {
             }
         });
 
-        if (!errores.isEmpty())
-            throw new ValidationException(errores);
+        if (!errores.isEmpty()) {
+            throw new ValidationException("Error en la actualización de cuenta", errores);
+        }
 
         return clientePersistencePort.save(cliente);
     }

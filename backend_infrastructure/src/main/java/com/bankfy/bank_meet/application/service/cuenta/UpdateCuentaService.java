@@ -46,8 +46,9 @@ public class UpdateCuentaService implements UpdateCuentaUseCase {
                     errores.put(key, msg);
                 });
 
-        if (!errores.isEmpty())
-            throw new ValidationException(errores);
+        if (!errores.isEmpty()) {
+            throw new ValidationException("Error en la actualización de cuenta", errores);
+        }
 
         return cuentaPersistencePort.save(cuenta);
     }
@@ -60,7 +61,8 @@ public class UpdateCuentaService implements UpdateCuentaUseCase {
         if (nuevos.getTipoCuenta() != null && !existente.getTipoCuenta().equals(nuevos.getTipoCuenta()))
             errores.put("tipoCuenta", "No se permite cambiar el tipo de cuenta.");
 
-        if (!errores.isEmpty())
-            throw new ValidationException(errores);
+        if (!errores.isEmpty()) {
+            throw new ValidationException("Error en la actualización de cuenta", errores);
+        }
     }
 }
