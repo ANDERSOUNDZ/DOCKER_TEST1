@@ -12,6 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +37,7 @@ public class CreateMovimientoService implements CreateMovimientoUseCase {
         movimiento.setSaldoAnterior(saldoAnterior);
 
         prepararValorSegunTipo(movimiento);
+
         validarRestriccionesProducto(movimiento, cuenta);
 
         if (movimiento.getValor().signum() == -1) {
@@ -48,7 +52,10 @@ public class CreateMovimientoService implements CreateMovimientoUseCase {
         cuenta.setSaldoInicial(nuevoSaldo);
         cuentaPersistencePort.save(cuenta);
 
-        movimiento.setFecha(LocalDateTime.now());
+        ZoneId zonaEcuador = ZoneId.of("America/Guayaquil");
+        LocalDateTime horaEcuador = ZonedDateTime.now(zonaEcuador).toLocalDateTime();
+        movimiento.setFecha(horaEcuador.truncatedTo(ChronoUnit.SECONDS));
+
         movimiento.setSaldo(nuevoSaldo);
         movimiento.setCuenta(cuenta);
 
@@ -65,8 +72,9 @@ public class CreateMovimientoService implements CreateMovimientoUseCase {
     }
 
     private void validarLimiteDiario(Cuenta cuenta, BigDecimal monto) {
-        LocalDateTime inicio = LocalDateTime.now().with(LocalTime.MIN);
-        LocalDateTime fin = LocalDateTime.now().with(LocalTime.MAX);
+        ZoneId zonaEcuador = ZoneId.of("America/Guayaquil");
+        LocalDateTime inicio = ZonedDateTime.now(zonaEcuador).toLocalDateTime().with(LocalTime.MIN);
+        LocalDateTime fin = ZonedDateTime.now(zonaEcuador).toLocalDateTime().with(LocalTime.MAX);
 
         BigDecimal acumuladoHoy = movimientoPersistencePort.sumRetirosDelDia(
                 cuenta.getCliente().getId(), inicio, fin);
@@ -79,10 +87,14 @@ public class CreateMovimientoService implements CreateMovimientoUseCase {
     }
 
     private void prepararValorSegunTipo(Movimiento mov) {
-        BigDecimal valor = mov.getValor().abs();
+        BigDecimal valorAbsoluto = mov.getValor().abs();
         boolean esDebito = mov.getTipoMovimiento().equalsIgnoreCase("Retiro") ||
                 mov.getTipoMovimiento().equalsIgnoreCase("Debito");
-        mov.setValor(esDebito ? valor.negate() : valor);
+
+        mov.setValor(esDebito ? valorAbsoluto.negate() : valorAbsoluto);
+
+        String prefijo = esDebito ? "Retiro de " : "Deposito de ";
+        mov.setTipoMovimiento(prefijo + valorAbsoluto);
     }
 
     private void validarRestriccionesProducto(Movimiento mov, Cuenta cuenta) {
