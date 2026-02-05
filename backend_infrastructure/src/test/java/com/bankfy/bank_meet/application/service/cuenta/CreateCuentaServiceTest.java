@@ -1,11 +1,13 @@
 package com.bankfy.bank_meet.application.service.cuenta;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+
+import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,9 +17,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.bankfy.bank_meet.application.ports.output.cliente.ClientePersistencePort;
 import com.bankfy.bank_meet.application.ports.output.cuenta.CuentaPersistencePort;
+import com.bankfy.bank_meet.application.service.config.IdGeneratorService;
+import com.bankfy.bank_meet.application.service.cuenta.CreateCuentaService;
 import com.bankfy.bank_meet.domain.models.cliente.Cliente;
 import com.bankfy.bank_meet.domain.models.cuenta.Cuenta;
-import com.bankfy.bank_meet.domain.exceptions.ValidationException;
 
 @ExtendWith(MockitoExtension.class)
 class CreateCuentaServiceTest {
@@ -28,39 +31,41 @@ class CreateCuentaServiceTest {
     @Mock
     private ClientePersistencePort clientePersistencePort;
 
+    @Mock
+    private IdGeneratorService idGenerator;
+
     @InjectMocks
     private CreateCuentaService createCuentaService;
 
     @Test
-    void execute_ShouldThrowException_WhenAccountLimitReached() {
-        // 1. Arrange
+    void testCrearCuentas_Imagen2_Exito() {
+        // Arrange:
         Long clienteId = 1L;
-        String tipoCuenta = "Ahorros";
+        Cliente joseLema = new Cliente();
+        joseLema.setId(clienteId);
 
-        Cliente clienteMock = new Cliente();
-        clienteMock.setId(clienteId);
+        Cuenta cuentaJose = new Cuenta();
+        cuentaJose.setTipoCuenta("Ahorros");
+        cuentaJose.setSaldoInicial(new BigDecimal("2000.00"));
+        cuentaJose.setCliente(joseLema);
 
-        Cuenta nuevaCuenta = new Cuenta();
-        nuevaCuenta.setTipoCuenta(tipoCuenta);
-        nuevaCuenta.setCliente(clienteMock);
-
-        // CORRECCIÓN 1: El service usa existsById, no findById
         when(clientePersistencePort.existsById(clienteId)).thenReturn(true);
+        when(idGenerator.generateAccountNumber()).thenReturn("478758");
+        when(cuentaPersistencePort.existsByNumeroCuenta("478758")).thenReturn(false);
+        when(cuentaPersistencePort.countByClienteIdAndTipoCuenta(anyLong(), anyString())).thenReturn(0L);
 
-        // CORRECCIÓN 2: Aseguramos que count devuelva el límite (3 para Ahorros)
-        when(cuentaPersistencePort.countByClienteIdAndTipoCuenta(clienteId, tipoCuenta)).thenReturn((long) 3);
-
-        // 2. Act & 3. Assert
-        ValidationException exception = assertThrows(ValidationException.class, () -> {
-            createCuentaService.execute(nuevaCuenta);
+        when(cuentaPersistencePort.save(any(Cuenta.class))).thenAnswer(invocation -> {
+            Cuenta c = invocation.getArgument(0);
+            return c;
         });
 
-        // CORRECCIÓN 3: El mensaje ahora coincide con el Service
-        assertTrue(exception.getMessage().contains("Error en la creación de cuenta"));
+        // Act
+        Cuenta resultado = createCuentaService.execute(cuentaJose);
 
-        // Verificamos que el error específico esté en el mapa interno de la excepción
-        assertTrue(exception.getErrors().get("tipoCuenta").contains("Límite de 3 alcanzado"));
-
-        verify(cuentaPersistencePort, never()).save(any());
+        // Assert
+        assertNotNull(resultado);
+        assertEquals("478758", resultado.getNumeroCuenta());
+        assertEquals(new BigDecimal("2000.00"), resultado.getSaldoInicial());
+        assertEquals(true, resultado.getEstado());
     }
 }
