@@ -1,0 +1,70 @@
+<div class="module-view">
+  <header class="module-header">
+    <h2 class="module-title">Reportes de Estado de Cuenta</h2>
+  </header>
+
+  <div class="filter-card">
+    <div class="filter-grid">
+      <div class="form-group">
+        <label>Cliente ID</label>
+        <input type="number" [(ngModel)]="filtros.clienteId" placeholder="Ej: 1" />
+      </div>
+      <div class="form-group">
+        <label>Fecha Inicio</label>
+        <input type="date" [(ngModel)]="filtros.inicio" />
+      </div>
+      <div class="form-group">
+        <label>Fecha Fin</label>
+        <input type="date" [(ngModel)]="filtros.fin" />
+      </div>
+      <div class="filter-actions">
+        <button class="btn-primary" (click)="generarReporte()" [disabled]="loading()">
+          {{ loading() ? 'Generando...' : 'Generar Reporte' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  @if (reporte()) {
+    <div class="report-result animate-fadeIn">
+      <div class="summary-cards">
+        <div class="card credit">
+          <small>Total Créditos (Depósitos)</small>
+          <h3>{{ reporte()?.totalCreditos | currency: 'USD' }}</h3>
+        </div>
+        <div class="card debit">
+          <small>Total Débitos (Retiros)</small>
+          <h3>{{ reporte()?.totalDebitos | currency: 'USD' }}</h3>
+        </div>
+        <div class="card action">
+          <button class="btn-download" (click)="descargarPdf()">Descargar PDF Oficial</button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>N° Cuenta</th>
+              <th>Tipo</th>
+              <th>Movimiento</th>
+              <th>Saldo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let mov of reporte()?.movimientos">
+              <td>{{ mov.fecha }}</td>
+              <td>{{ mov.cuenta?.numeroCuenta }}</td>
+              <td>{{ mov.tipoMovimiento }}</td>
+              <td [ngClass]="mov.movimiento < 0 ? 'text-danger' : 'text-success'">
+                {{ mov.movimiento | currency }}
+              </td>
+              <td>{{ mov.saldo | currency }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</div>

@@ -24,27 +24,26 @@ export class ClienteList implements OnInit {
 
   loadClientes(
     search: string = this.state.searchQuery(),
-    page: number = this.state.pagination().currentPage,
+    page: number = this.state.paginationClientes().currentPage, // CORREGIDO
   ): void {
     this.state.setLoading(true);
     this.state.setSearchQuery(search);
-    this.state.setPage(page); // Persistimos la página actual
+    this.state.setPageClientes(page); // CORREGIDO
 
-    this.clienteRepo.getAll(search, page, this.state.pagination().pageSize).subscribe({
+    this.clienteRepo.getAll(search, page, this.state.paginationClientes().pageSize).subscribe({
+      // CORREGIDO
       next: (res) => {
         this.state.setClientes(res.data.content);
 
-        // Actualizamos los metadatos de paginación con lo que envió Spring
-        this.state.setPagination({
+        this.state.setPaginationClientes({
+          // CORREGIDO
           currentPage: res.data.number,
           pageSize: res.data.size,
           totalElements: res.data.totalElements,
           totalPages: res.data.totalPages,
         });
-
         this.state.setLoading(false);
       },
-      error: () => this.state.setLoading(false),
     });
   }
 
@@ -61,7 +60,7 @@ export class ClienteList implements OnInit {
   }
 
   goToPage(page: number): void {
-    if (page >= 0 && page < this.state.pagination().totalPages) {
+    if (page >= 0 && page < this.state.paginationClientes().totalPages) { // CORREGIDO
       this.loadClientes(this.state.searchQuery(), page);
     }
   }

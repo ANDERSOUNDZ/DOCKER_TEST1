@@ -80,22 +80,22 @@
     </table>
     <div class="pagination-controls">
       <div class="pagination-info">
-        Mostrando {{ state.pagination().currentPage * state.pagination().pageSize + 1 }} a
-        {{ (state.pagination().currentPage + 1) * state.pagination().pageSize }} de
-        {{ state.pagination().totalElements }} clientes
+        Mostrando {{ state.paginationClientes().currentPage * state.paginationClientes().pageSize + 1 }} a
+        {{ (state.paginationClientes().currentPage + 1) * state.paginationClientes().pageSize }} de
+        {{ state.paginationClientes().totalElements }} clientes
       </div>
 
       <div class="pagination-buttons">
         <button
-          [disabled]="state.pagination().currentPage === 0"
-          (click)="goToPage(state.pagination().currentPage - 1)"
+          [disabled]="state.paginationClientes().currentPage === 0"
+          (click)="goToPage(state.paginationClientes().currentPage - 1)"
         >
           Anterior
         </button>
 
-        @for (p of [].constructor(state.pagination().totalPages); track $index) {
+        @for (p of [].constructor(state.paginationClientes().totalPages); track $index) {
           <button
-            [class.active]="$index === state.pagination().currentPage"
+            [class.active]="$index === state.paginationClientes().currentPage"
             (click)="goToPage($index)"
           >
             {{ $index + 1 }}
@@ -103,8 +103,8 @@
         }
 
         <button
-          [disabled]="state.pagination().currentPage === state.pagination().totalPages - 1"
-          (click)="goToPage(state.pagination().currentPage + 1)"
+          [disabled]="state.paginationClientes().currentPage === state.paginationClientes().totalPages - 1"
+          (click)="goToPage(state.paginationClientes().currentPage + 1)"
         >
           Siguiente
         </button>

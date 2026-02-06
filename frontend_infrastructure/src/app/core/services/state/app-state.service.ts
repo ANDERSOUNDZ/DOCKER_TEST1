@@ -1,5 +1,4 @@
 import { Injectable, signal } from '@angular/core';
-import { Cliente } from '../../../domain/models/cliente/cliente.model';
 
 export interface PaginationState {
   currentPage: number;
@@ -8,28 +7,47 @@ export interface PaginationState {
   totalPages: number;
 }
 
+/**
+ * Función auxiliar para generar un estado de paginación inicial limpio.
+ */
+const initialPagination = (): PaginationState => ({
+  currentPage: 0,
+  pageSize: 10,
+  totalElements: 0,
+  totalPages: 0,
+});
 
 @Injectable({ providedIn: 'root' })
 export class AppStateService {
-  private _clientes = signal<Cliente[]>([]);
+  // --- SEÑALES PRIVADAS ---
+  private _items = signal<any[]>([]);
   private _loading = signal<boolean>(false);
   private _searchQuery = signal<string>('');
 
-  private _pagination = signal<PaginationState>({
-    currentPage: 0,
-    pageSize: 10,
-    totalElements: 0,
-    totalPages: 0
-  });
+  // Estados de paginación independientes para evitar persistencia cruzada
+  private _paginationClientes = signal<PaginationState>(initialPagination());
+  private _paginationCuentas = signal<PaginationState>(initialPagination());
+  private _paginationMovimientos = signal<PaginationState>(initialPagination());
 
-  public pagination = this._pagination.asReadonly();
-
-  public clientes = this._clientes.asReadonly();
+  // --- SEÑALES PÚBLICAS (Readonly) ---
+  public items = this._items.asReadonly();
+  public clientes = this._items.asReadonly();
   public isLoading = this._loading.asReadonly();
   public searchQuery = this._searchQuery.asReadonly();
+  public paginationMovimientos = this._paginationMovimientos.asReadonly();
 
-  setClientes(data: Cliente[]) {
-    this._clientes.set(data);
+  // Exponemos las paginaciones por separado
+  public paginationClientes = this._paginationClientes.asReadonly();
+  public paginationCuentas = this._paginationCuentas.asReadonly();
+
+  // --- MÉTODOS DE ACTUALIZACIÓN GENÉRICOS ---
+
+  setItems(data: any[]) {
+    this._items.set(data);
+  }
+
+  setClientes(data: any[]) {
+    this._items.set(data);
   }
 
   setLoading(value: boolean) {
@@ -40,11 +58,47 @@ export class AppStateService {
     this._searchQuery.set(query);
   }
 
-  setPagination(data: PaginationState) {
-    this._pagination.set(data);
+  // --- MÉTODOS DE PAGINACIÓN ESPECÍFICOS ---
+
+  /**
+   * Actualiza la paginación de Clientes
+   */
+  setPaginationClientes(data: PaginationState) {
+    this._paginationClientes.set(data);
   }
 
-  setPage(page: number) {
-    this._pagination.update(prev => ({ ...prev, currentPage: page }));
+  setPageClientes(page: number) {
+    this._paginationClientes.update((prev) => ({ ...prev, currentPage: page }));
+  }
+
+  /**
+   * Actualiza la paginación de Cuentas
+   */
+  setPaginationCuentas(data: PaginationState) {
+    this._paginationCuentas.set(data);
+  }
+
+  setPageCuentas(page: number) {
+    this._paginationCuentas.update((prev) => ({ ...prev, currentPage: page }));
+  }
+
+  /**
+   * Actualiza la paginación de Movimientos
+   */
+  setPaginationMovimientos(data: PaginationState) {
+    this._paginationMovimientos.set(data);
+  }
+
+  setPageMovimientos(page: number) {
+    this._paginationMovimientos.update((prev) => ({ ...prev, currentPage: page }));
+  }
+
+  /**
+   * Limpia los items y resetea las búsquedas al cambiar de módulo si es necesario
+   */
+  clearState() {
+    this._items.set([]);
+    this._searchQuery.set('');
+    this._loading.set(false);
   }
 }

@@ -1,0 +1,147 @@
+/* Reutilizamos la base de tu diseño corporativo */
+.module-view {
+  position: relative;
+  min-height: 400px;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.module-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 15px;
+
+  .module-title {
+    font-size: 1.5rem;
+    color: #333;
+    font-weight: 700;
+  }
+}
+
+/* Estilo para los filtros en la cabecera */
+.filter-group-horizontal {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 8px 15px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+
+  .input-styled {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    outline: none;
+    &:focus { border-color: #f1c40f; }
+  }
+}
+
+.btn-primary {
+  background-color: #f1c40f;
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+  &:hover { background-color: #d4ac0d; }
+}
+
+/* Tabla */
+.table-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    th {
+      background-color: #f8f9fa;
+      padding: 15px;
+      color: #666;
+      font-weight: 600;
+      border-bottom: 2px solid #eee;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+    }
+    td {
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+      color: #444;
+    }
+    .empty-row {
+      text-align: center;
+      padding: 3rem;
+      color: #999;
+      font-style: italic;
+    }
+  }
+}
+
+.badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background-color: #ffebee; // Default Retiro
+  color: #c62828;
+
+  &.active {
+    background-color: #e8f5e9; // Depósito
+    color: #2e7d32;
+  }
+}
+
+.text-success { color: #2e7d32; }
+.text-danger { color: #d32f2f; }
+.fw-bold { font-weight: 700; }
+
+/* Cargador y Paginación (Igual que Cuentas) */
+.loading-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  backdrop-filter: blur(2px);
+
+  .spinner {
+    width: 40px; height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #f1c40f;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+  }
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #f8f9fa;
+  .pagination-buttons button {
+    padding: 6px 12px;
+    margin-left: 5px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    &:disabled { color: #ccc; cursor: not-allowed; }
+    &:hover:not(:disabled) { background: #fff9db; border-color: #f1c40f; }
+  }
+}
+
+@keyframes spin { 100% { transform: rotate(360deg); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }

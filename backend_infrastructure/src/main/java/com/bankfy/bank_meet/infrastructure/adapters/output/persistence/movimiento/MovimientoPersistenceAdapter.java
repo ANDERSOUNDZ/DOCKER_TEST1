@@ -4,6 +4,9 @@ import com.bankfy.bank_meet.application.ports.output.movimiento.MovimientoPersis
 import com.bankfy.bank_meet.domain.models.movimiento.Movimiento;
 import com.bankfy.bank_meet.infrastructure.adapters.output.repository.MovimientosRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -34,7 +37,18 @@ public class MovimientoPersistenceAdapter implements MovimientoPersistencePort {
     }
 
     @Override
+    public Page<Movimiento> findByClienteAndFechaRange(Long clienteId, LocalDateTime inicio, LocalDateTime fin,
+            Pageable pageable) {
+        return repository.findByClienteAndFechaRange(clienteId, inicio, fin, pageable);
+    }
+
+    @Override
     public List<Movimiento> findByClienteAndFechaRange(Long clienteId, LocalDateTime inicio, LocalDateTime fin) {
         return repository.findByClienteAndFechaRange(clienteId, inicio, fin);
+    }
+
+    @Override
+    public Page<Movimiento> findAllByFechaRange(LocalDateTime inicio, LocalDateTime fin, Pageable pageable) {
+        return repository.findAllByFechaBetween(inicio, fin, pageable);
     }
 }
