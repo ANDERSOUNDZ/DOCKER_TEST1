@@ -1,11 +1,17 @@
 <div class="layout-wrapper">
   <app-navbar></app-navbar>
-
   <div class="layout-body">
-    <app-sidebar class="hide-mobile"></app-sidebar>
-
+    <app-sidebar></app-sidebar>
     <main class="layout-content">
       <router-outlet></router-outlet>
     </main>
   </div>
+
+  @if (notify.alert(); as n) {
+    <div class="toast-container">
+      <div class="toast" [class]="n.type">
+        {{ n.message }}
+      </div>
+    </div>
+  }
 </div>

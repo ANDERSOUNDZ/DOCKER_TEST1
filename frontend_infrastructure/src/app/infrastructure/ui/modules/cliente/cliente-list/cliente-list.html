@@ -1,1 +1,71 @@
-<p>cliente-list works!</p>
+<div class="module-view">
+  @if (state.isLoading()) {
+    <div class="loading-overlay">
+      <div class="spinner"></div>
+      <p>Cargando información...</p>
+    </div>
+  }
+
+  <header class="module-header">
+    <h2 class="module-title">Clientes</h2>
+
+    <div class="header-actions">
+      <div class="search-box">
+        <input
+          type="text"
+          placeholder="Buscar por nombre o identificación..."
+          [value]="state.searchQuery()"
+          (input)="onSearch($event)"
+        />
+      </div>
+
+      <button class="btn-primary" (click)="showForm = true">Nuevo Cliente</button>
+
+      @if (showForm) {
+        <app-cliente-form (close)="showForm = false" (saved)="loadClientes()"> </app-cliente-form>
+      }
+    </div>
+  </header>
+
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Identificación</th>
+          <th>Teléfono</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of state.clientes(); track item.id) {
+          <tr>
+            <td>{{ item.clienteId }}</td>
+            <td>
+              <strong>{{ item.nombre }}</strong>
+            </td>
+            <td>{{ item.identificacion }}</td>
+            <td>{{ item.telefono }}</td>
+            <td>
+              <span class="badge" [class.active]="item.estado">
+                {{ item.estado ? 'Activo' : 'Inactivo' }}
+              </span>
+            </td>
+            <td>
+              <div class="action-buttons">
+                <button class="btn-icon edit">✎</button>
+                <button class="btn-icon delete">✖</button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" class="empty-row">No se encontraron clientes.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
