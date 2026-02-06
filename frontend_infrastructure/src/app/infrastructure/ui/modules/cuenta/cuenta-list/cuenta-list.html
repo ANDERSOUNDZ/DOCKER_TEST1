@@ -9,11 +9,21 @@
   <header class="module-header">
     <h2 class="module-title">Cuentas Bancarias</h2>
     <div class="header-actions">
+      <div class="search-box">
+        <input
+          type="text"
+          placeholder="Buscar por número de cuenta o nombre de cliente..."
+          [value]="searchQuery()"
+          (input)="onSearch($event)"
+        />
+      </div>
+
       @if (!showForm) {
         <button class="btn-primary" (click)="openCreate()">Nueva Cuenta</button>
       }
     </div>
   </header>
+
   @if (showForm) {
     <app-cuenta-form
       [cuentaData]="selectedCuenta()"
@@ -35,7 +45,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (item of state.items(); track item.id) {
+        @for (item of sortedItems(); track item.id) {
           <tr>
             <td>
               <strong>{{ item.numeroCuenta }}</strong>
@@ -77,7 +87,8 @@
 
     <div class="pagination-controls">
       <div class="pagination-info">
-        Mostrando {{ state.paginationCuentas().currentPage * state.paginationCuentas().pageSize + 1 }} a
+        Mostrando
+        {{ state.paginationCuentas().currentPage * state.paginationCuentas().pageSize + 1 }} a
         {{ (state.paginationCuentas().currentPage + 1) * state.paginationCuentas().pageSize }} de
         {{ state.paginationCuentas().totalElements }} cuentas
       </div>
@@ -100,7 +111,9 @@
         }
 
         <button
-          [disabled]="state.paginationCuentas().currentPage === state.paginationCuentas().totalPages - 1"
+          [disabled]="
+            state.paginationCuentas().currentPage === state.paginationCuentas().totalPages - 1
+          "
           (click)="goToPage(state.paginationCuentas().currentPage + 1)"
         >
           Siguiente

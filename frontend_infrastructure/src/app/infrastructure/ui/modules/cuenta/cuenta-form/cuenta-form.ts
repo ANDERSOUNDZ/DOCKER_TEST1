@@ -43,16 +43,22 @@ export class CuentaForm implements OnInit {
 
   ngOnInit(): void {
     this.cargarClientes();
+
     if (this.cuentaData) {
+      // Intentamos obtener el ID del cliente.
+      // Si el backend no lo envía directo, a veces viene como 'id_cliente' o dentro de un objeto.
+      const idCliente = this.cuentaData.clienteId || (this.cuentaData as any).id_cliente;
+
       this.form.patchValue({
         tipoCuenta: this.cuentaData.tipoCuenta,
-        // Cambia saldoActual por la propiedad que sí exista en tu modelo Cuenta
-        saldoInicial: (this.cuentaData as any).saldoActual || (this.cuentaData as any).saldoInicial,
-        // Si el ID del cliente no viene directo, intenta buscarlo así:
-        clienteId: this.cuentaData.clienteId || (this.cuentaData as any).id_cliente,
+        // Mapeamos saldoActual del DTO Java al campo del formulario
+        saldoInicial: (this.cuentaData as any).saldoActual ?? this.cuentaData.saldoInicial,
+        clienteId: idCliente,
       });
-      // Desactivamos campos que no son editables según tu Backend (updatable = false)
+
+      // Campos inmutables en edición según reglas de negocio en Java
       this.form.get('clienteId')?.disable();
+      this.form.get('saldoInicial')?.disable();
     }
   }
 
@@ -96,5 +102,10 @@ export class CuentaForm implements OnInit {
         }
       },
     });
+  }
+
+  isInvalid(field: string) {
+    const control = this.form.get(field);
+    return control ? control.invalid && (control.touched || control.dirty) : false;
   }
 }

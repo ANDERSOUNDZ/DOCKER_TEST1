@@ -5,7 +5,7 @@
   animation: fadeIn 0.4s ease-out;
 }
 
-/* Cabecera */
+/* Cabecera y Acciones Superiores */
 .module-header {
   display: flex;
   justify-content: space-between;
@@ -25,12 +25,26 @@
     display: flex;
     gap: 15px;
     align-items: center;
+
+    .search-box input {
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      width: 300px;
+      outline: none;
+      transition: all 0.3s;
+
+      &:focus {
+        border-color: #f1c40f;
+        box-shadow: 0 0 0 3px rgba(241, 196, 15, 0.2);
+      }
+    }
   }
 }
 
-/* Botón Principal (Nueva Cuenta) */
+/* Botón Principal */
 .btn-primary {
-  background-color: #f1c40f; // Amarillo corporativo
+  background-color: #f1c40f;
   color: #000;
   border: none;
   padding: 10px 20px;
@@ -74,16 +88,16 @@
       vertical-align: middle;
     }
 
-    /* Celda de información de cliente dentro de la cuenta */
+    /* Estilo para la celda de información (Nombre y Documento) */
     .info-cell {
       display: flex;
       flex-direction: column;
-
+      
       span {
         font-weight: 600;
         color: #333;
       }
-
+      
       small {
         color: #888;
         font-size: 0.75rem;
@@ -107,6 +121,7 @@
   font-weight: 600;
   background-color: #f1f1f1;
   color: #666;
+  white-space: nowrap;
 
   &.active {
     background-color: #e8f5e9;
@@ -114,7 +129,7 @@
   }
 }
 
-/* Botones de Acción (Estilo Texto) */
+/* Botones de Acción Estilo Texto */
 .action-buttons-text {
   display: flex;
   gap: 8px;
@@ -146,7 +161,7 @@
   }
 }
 
-/* Loading Overlay */
+/* Loading Overlay y Spinner */
 .loading-overlay {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -212,7 +227,16 @@
   }
 }
 
-/* Animaciones */
+/* Animaciones y Efectos */
+.recent-change {
+  animation: highlight-pulse 2s ease-in-out;
+}
+
+@keyframes highlight-pulse {
+  0% { background-color: rgba(241, 196, 15, 0.3); }
+  100% { background-color: transparent; }
+}
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }

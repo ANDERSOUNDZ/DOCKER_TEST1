@@ -8,7 +8,6 @@
 
   <header class="module-header">
     <h2 class="module-title">Clientes</h2>
-
     <div class="header-actions">
       <div class="search-box">
         <input
@@ -23,9 +22,8 @@
         <app-cliente-form
           [clienteData]="selectedCliente()"
           (close)="showForm = false"
-          (saved)="loadClientes()"
-        >
-        </app-cliente-form>
+          (saved)="onClienteSaved()"
+        ></app-cliente-form>
       }
     </div>
   </header>
@@ -43,8 +41,8 @@
         </tr>
       </thead>
       <tbody>
-        @for (item of state.clientes(); track item.id) {
-          <tr>
+        @for (item of sortedClientes(); track item.id) {
+          <tr [class.recent-change]="item.id === lastAffectedId()">
             <td>{{ item.clienteId }}</td>
             <td>
               <strong>{{ item.nombre }}</strong>
@@ -59,7 +57,6 @@
             <td>
               <div class="action-buttons-text">
                 <button class="btn-text edit" (click)="openEdit(item)">Editar</button>
-
                 <button
                   class="btn-text"
                   [class.delete]="item.estado"
@@ -78,13 +75,14 @@
         }
       </tbody>
     </table>
+
     <div class="pagination-controls">
       <div class="pagination-info">
-        Mostrando {{ state.paginationClientes().currentPage * state.paginationClientes().pageSize + 1 }} a
+        Mostrando
+        {{ state.paginationClientes().currentPage * state.paginationClientes().pageSize + 1 }} a
         {{ (state.paginationClientes().currentPage + 1) * state.paginationClientes().pageSize }} de
         {{ state.paginationClientes().totalElements }} clientes
       </div>
-
       <div class="pagination-buttons">
         <button
           [disabled]="state.paginationClientes().currentPage === 0"
@@ -92,7 +90,6 @@
         >
           Anterior
         </button>
-
         @for (p of [].constructor(state.paginationClientes().totalPages); track $index) {
           <button
             [class.active]="$index === state.paginationClientes().currentPage"
@@ -101,9 +98,10 @@
             {{ $index + 1 }}
           </button>
         }
-
         <button
-          [disabled]="state.paginationClientes().currentPage === state.paginationClientes().totalPages - 1"
+          [disabled]="
+            state.paginationClientes().currentPage === state.paginationClientes().totalPages - 1
+          "
           (click)="goToPage(state.paginationClientes().currentPage + 1)"
         >
           Siguiente

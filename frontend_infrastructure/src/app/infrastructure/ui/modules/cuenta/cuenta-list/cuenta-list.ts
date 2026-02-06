@@ -1,10 +1,11 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CuentaRepository } from '../../../../../domain/repository/cuenta/cuenta.repository';
 import { AppStateService } from '../../../../../core/services/state/app-state.service';
 import { Alert } from '../../../../../core/services/alert/alert';
 import { Cuenta } from '../../../../../domain/models/cuenta/cuenta';
 import { CuentaForm } from '../cuenta-form/cuenta-form';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-cuenta-list',
@@ -19,29 +20,52 @@ export class CuentaList implements OnInit {
   public state = inject(AppStateService);
 
   showForm = false;
-  selectedCuenta = signal<Cuenta | null>(null);
+  selectedCuenta = signal<any | null>(null);
+
+  // Señal local para el buscador de cuentas si no está en el AppState
+  searchQuery = signal<string>('');
+
+  // LÓGICA DE FILTRADO Y ORDENAMIENTO (Frontend)
+  sortedItems = computed(() => {
+    // 1. Obtenemos los items del estado
+    let items = [...this.state.items()];
+    const query = this.searchQuery().toLowerCase();
+
+    // 2. Filtramos localmente por nombre de cliente o número de cuenta
+    if (query) {
+      items = items.filter(
+        (item) =>
+          item.numeroCuenta.toLowerCase().includes(query) ||
+          item.nombreCliente?.toLowerCase().includes(query),
+      );
+    }
+
+    // 3. Ordenamos: Activas primero, luego por ID descendente
+    return items.sort((a, b) => {
+      if (a.estado !== b.estado) return a.estado ? -1 : 1;
+      return b.id - a.id;
+    });
+  });
 
   ngOnInit(): void {
     this.loadCuentas();
   }
 
   loadCuentas(page: number = this.state.paginationCuentas().currentPage): void {
-    // CORREGIDO
     this.state.setLoading(true);
-    this.state.setPageCuentas(page); // CORREGIDO
+    this.state.setPageCuentas(page);
 
     this.cuentaRepo.getAll(page, this.state.paginationCuentas().pageSize).subscribe({
-      // CORREGIDO
       next: (res: any) => {
-        const content = res?.content || [];
+        // Asumimos que res.data contiene la información de paginación
+        const content = res?.data?.content || res?.content || [];
         this.state.setItems(content);
 
         this.state.setPaginationCuentas({
-          // CORREGIDO
-          currentPage: res?.number ?? 0,
-          pageSize: res?.size ?? 10,
-          totalElements: res?.totalElements ?? 0,
-          totalPages: res?.totalPages ?? 0,
+          currentPage: res?.data?.number ?? res?.number ?? 0,
+          pageSize: res?.data?.size ?? res?.size ?? 10,
+          totalElements: res?.data?.totalElements ?? res?.totalElements ?? 0,
+          totalPages: res?.data?.totalPages ?? res?.totalPages ?? 0,
         });
         this.state.setLoading(false);
       },
@@ -49,9 +73,14 @@ export class CuentaList implements OnInit {
     });
   }
 
+  onSearch(event: Event): void {
+    const element = event.target as HTMLInputElement;
+    this.searchQuery.set(element.value);
+  }
+
+  // Resto de métodos de UI
   goToPage(page: number): void {
     if (page >= 0 && page < this.state.paginationCuentas().totalPages) {
-      // CORREGIDO
       this.loadCuentas(page);
     }
   }
@@ -61,33 +90,27 @@ export class CuentaList implements OnInit {
     this.showForm = true;
   }
 
-  openEdit(cuenta: Cuenta) {
+  openEdit(cuenta: any) {
     this.selectedCuenta.set(cuenta);
     this.showForm = true;
   }
 
-  toggleEstado(cuenta: Cuenta) {
+  toggleEstado(cuenta: any) {
     const seraActivo = !cuenta.estado;
     const accion = seraActivo ? 'activar' : 'inactivar';
-    const confirmar = confirm(
-      `¿Está seguro de que desea ${accion} la cuenta Nº ${cuenta.numeroCuenta}?`,
-    );
 
-    if (!confirmar) return;
+    if (!confirm(`¿Está seguro de que desea ${accion} la cuenta Nº ${cuenta.numeroCuenta}?`))
+      return;
 
     this.state.setLoading(true);
+    const request$: Observable<any> = seraActivo
+      ? this.cuentaRepo.activar(cuenta.numeroCuenta)
+      : this.cuentaRepo.delete(cuenta.id);
 
-    if (!seraActivo) {
-      this.cuentaRepo.delete(cuenta.id!).subscribe({
-        next: () => this.handleSuccess('Cuenta desactivada correctamente'),
-        error: (err: any) => this.handleError(err),
-      });
-    } else {
-      this.cuentaRepo.activar(cuenta.numeroCuenta).subscribe({
-        next: () => this.handleSuccess('Cuenta activada correctamente'),
-        error: (err: any) => this.handleError(err),
-      });
-    }
+    request$.subscribe({
+      next: () => this.handleSuccess(`Cuenta ${accion}ada correctamente`),
+      error: (err: any) => this.handleError(err),
+    });
   }
 
   private handleSuccess(message: string) {
@@ -98,6 +121,6 @@ export class CuentaList implements OnInit {
   private handleError(err: any) {
     this.state.setLoading(false);
     const msg = err.error?.message || 'Error al procesar la solicitud';
-    this.notify.show(typeof msg === 'object' ? 'Error de validación' : msg, 'error');
+    this.notify.show(msg, 'error');
   }
 }

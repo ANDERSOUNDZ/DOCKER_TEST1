@@ -50,18 +50,17 @@ export class ClienteForm implements OnInit {
   }
 
   submit() {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched(); // Esto fuerza la aparición de errores visuales locales
+      return;
+    }
 
-    // Forzamos el tipo a 'any' para poder usar 'delete' sin errores de TS
     const data: any = this.form.getRawValue();
-
-    // Si estamos editando y NO se activó el cambio de pass, la eliminamos del envío
     if (this.clienteData() && !this.cambiarPass()) {
       delete data.contrasena;
     }
 
     const clienteId = this.clienteData()?.id;
-
     const request$ = clienteId
       ? this.clienteRepo.update(clienteId, data)
       : this.clienteRepo.create(data);
@@ -74,10 +73,21 @@ export class ClienteForm implements OnInit {
       },
       error: (err) => {
         const apiError = err.error;
-        if (err.status === 400 && apiError.message && typeof apiError.message === 'object') {
+
+        // Manejo de errores de validación del Backend (HTTP 400)
+        if (err.status === 400 && typeof apiError.message === 'object') {
           Object.keys(apiError.message).forEach((field) => {
-            this.form.get(field)?.setErrors({ serverError: apiError.message[field] });
+            const control = this.form.get(field);
+            if (control) {
+              control.setErrors({ serverError: apiError.message[field] });
+              control.markAsTouched();
+            }
           });
+        }
+        // Manejo de errores globales (HTTP 409, 500, etc.)
+        else {
+          const msg = apiError?.message || 'Error inesperado en el servidor';
+          this.notify.show(msg, 'error');
         }
       },
     });
@@ -93,7 +103,10 @@ export class ClienteForm implements OnInit {
 
   getErrorMessage(controlName: string, defaultMsg: string): string {
     const control = this.form.get(controlName);
-    return control?.hasError('serverError') ? control.getError('serverError') : defaultMsg;
+    if (control?.hasError('serverError')) {
+      return control.getError('serverError');
+    }
+    return defaultMsg;
   }
 
   togglePasswordEdit() {

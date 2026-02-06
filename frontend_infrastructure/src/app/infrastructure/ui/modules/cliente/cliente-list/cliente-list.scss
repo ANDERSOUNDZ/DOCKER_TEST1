@@ -228,6 +228,21 @@
   }
 }
 
+.recent-change {
+  animation: highlight-pulse 2s ease-in-out;
+  background-color: rgba(241, 196, 15, 0.1) !important;
+}
+
+@keyframes highlight-pulse {
+  0% { background-color: rgba(241, 196, 15, 0.4); }
+  100% { background-color: transparent; }
+}
+
+.sortable {
+  cursor: pointer;
+  &:hover { background-color: #f1f1f1; }
+}
+
 /* Animaciones */
 @keyframes spin {
   0% { transform: rotate(0deg); }

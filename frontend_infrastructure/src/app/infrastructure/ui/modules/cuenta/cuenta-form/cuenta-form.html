@@ -1,6 +1,6 @@
 <div class="form-card animate-fadeIn">
   <div class="form-header">
-    <h3>{{ cuentaData ? 'Editar' : 'Nueva' }} Cuenta Bancaria</h3>
+    <h3>{{ cuentaData ? 'Editar' : 'Registrar Nueva' }} Cuenta Bancaria</h3>
     <button class="btn-close" (click)="close.emit()">×</button>
   </div>
 
@@ -8,10 +8,7 @@
     <div class="form-grid">
       <div class="form-group">
         <label>Cliente Titular</label>
-        <select
-          formControlName="clienteId"
-          [class.error]="form.get('clienteId')?.invalid && form.get('clienteId')?.touched"
-        >
+        <select formControlName="clienteId" [class.error]="isInvalid('clienteId')">
           <option [ngValue]="null">Seleccione un cliente...</option>
           @for (cliente of clientesList(); track cliente.id) {
             <option [value]="cliente.id">
@@ -19,19 +16,22 @@
             </option>
           }
         </select>
+        @if (isInvalid('clienteId')) {
+          <span class="error-msg">Debe seleccionar un cliente</span>
+        }
       </div>
 
       <div class="form-group">
         <label>Tipo de Cuenta</label>
-        <select
-          formControlName="tipoCuenta"
-          [class.error]="form.get('tipoCuenta')?.invalid && form.get('tipoCuenta')?.touched"
-        >
+        <select formControlName="tipoCuenta" [class.error]="isInvalid('tipoCuenta')">
           <option value="">Seleccione tipo...</option>
           @for (tipo of tiposCuenta; track tipo) {
             <option [value]="tipo">{{ tipo }}</option>
           }
         </select>
+        @if (isInvalid('tipoCuenta')) {
+          <span class="error-msg">El tipo de cuenta es obligatorio</span>
+        }
       </div>
 
       <div class="form-group">
@@ -40,8 +40,11 @@
           type="number"
           formControlName="saldoInicial"
           placeholder="0.00"
-          [readonly]="!!cuentaData"
+          [class.error]="isInvalid('saldoInicial')"
         />
+        @if (isInvalid('saldoInicial')) {
+          <span class="error-msg">El saldo no puede ser negativo</span>
+        }
       </div>
     </div>
 
@@ -50,7 +53,7 @@
         Cancelar
       </button>
       <button type="submit" class="btn-primary" [disabled]="form.invalid || loading()">
-        {{ loading() ? 'Guardando...' : 'Guardar Cuenta' }}
+        {{ loading() ? 'Guardando...' : cuentaData ? 'Actualizar Cuenta' : 'Guardar Cuenta' }}
       </button>
     </div>
   </form>
