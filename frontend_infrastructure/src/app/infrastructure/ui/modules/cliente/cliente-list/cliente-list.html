@@ -67,5 +67,37 @@
         }
       </tbody>
     </table>
+    <div class="pagination-controls">
+      <div class="pagination-info">
+        Mostrando {{ state.pagination().currentPage * state.pagination().pageSize + 1 }} a
+        {{ (state.pagination().currentPage + 1) * state.pagination().pageSize }} de
+        {{ state.pagination().totalElements }} clientes
+      </div>
+
+      <div class="pagination-buttons">
+        <button
+          [disabled]="state.pagination().currentPage === 0"
+          (click)="goToPage(state.pagination().currentPage - 1)"
+        >
+          Anterior
+        </button>
+
+        @for (p of [].constructor(state.pagination().totalPages); track $index) {
+          <button
+            [class.active]="$index === state.pagination().currentPage"
+            (click)="goToPage($index)"
+          >
+            {{ $index + 1 }}
+          </button>
+        }
+
+        <button
+          [disabled]="state.pagination().currentPage === state.pagination().totalPages - 1"
+          (click)="goToPage(state.pagination().currentPage + 1)"
+        >
+          Siguiente
+        </button>
+      </div>
+    </div>
   </div>
 </div>

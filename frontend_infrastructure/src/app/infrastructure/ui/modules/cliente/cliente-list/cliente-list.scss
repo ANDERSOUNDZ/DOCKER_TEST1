@@ -122,6 +122,51 @@
 .btn-icon.edit:hover { color: #1a73e8; }
 .btn-icon.delete:hover { color: #d32f2f; }
 
+.pagination-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-top: 1px solid #eee;
+
+  .pagination-info {
+    font-size: 0.9rem;
+    color: #666;
+  }
+
+  .pagination-buttons {
+    display: flex;
+    gap: 5px;
+
+    button {
+      padding: 5px 12px;
+      border: 1px solid #ddd;
+      background: white;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s;
+
+      &:hover:not(:disabled) {
+        background: #f1c40f;
+        border-color: #f1c40f;
+      }
+
+      &.active {
+        background: #f1c40f;
+        color: black;
+        font-weight: bold;
+        border-color: #d4ac0d;
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+        color: #ccc;
+      }
+    }
+  }
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
