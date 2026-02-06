@@ -1,7 +1,7 @@
 <div class="modal-backdrop">
   <div class="modal-content">
     <div class="modal-header">
-      <h3>Registrar Nuevo Cliente</h3>
+      <h3>{{ clienteData() ? 'Editar Cliente' : 'Registrar Nuevo Cliente' }}</h3>
       <button class="close-btn" (click)="close.emit()">×</button>
     </div>
 
@@ -26,7 +26,7 @@
           <input formControlName="identificacion" placeholder="Cédula o RUC" />
           @if (form.get('identificacion')?.invalid && form.get('identificacion')?.touched) {
             <span class="error-msg">{{
-              getErrorMessage('identificacion', 'Identificación inválida (10-13 caracteres)')
+              getErrorMessage('identificacion', 'Inválida (10-13 caracteres)')
             }}</span>
           }
         </div>
@@ -38,9 +38,6 @@
             <option value="Masculino">Masculino</option>
             <option value="Femenino">Femenino</option>
           </select>
-          @if (form.get('genero')?.invalid && form.get('genero')?.touched) {
-            <span class="error-msg">El género es obligatorio</span>
-          }
         </div>
 
         <div class="form-group">
@@ -56,26 +53,32 @@
         <div class="form-group full-width">
           <label>Dirección</label>
           <input formControlName="direccion" />
-          @if (form.get('direccion')?.invalid && form.get('direccion')?.touched) {
-            <span class="error-msg">La dirección es obligatoria</span>
-          }
         </div>
 
         <div class="form-group">
           <label>Teléfono</label>
           <input formControlName="telefono" />
-          @if (form.get('telefono')?.invalid && form.get('telefono')?.touched) {
-            <span class="error-msg">El teléfono es obligatorio</span>
-          }
         </div>
 
         <div class="form-group">
-          <label>Contraseña</label>
-          <input type="password" formControlName="contrasena" />
+          <label style="display: flex; justify-content: space-between">
+            Contraseña
+            @if (clienteData()) {
+              <small
+                (click)="togglePasswordEdit()"
+                style="color: #3b82f6; cursor: pointer; font-weight: bold"
+              >
+                {{ cambiarPass() ? '✕ Cancelar' : '✎ Cambiar' }}
+              </small>
+            }
+          </label>
+          <input
+            type="password"
+            formControlName="contrasena"
+            [placeholder]="clienteData() && !cambiarPass() ? '********' : 'Mínimo 4 caracteres'"
+          />
           @if (form.get('contrasena')?.invalid && form.get('contrasena')?.touched) {
-            <span class="error-msg">{{
-              getErrorMessage('contrasena', 'Mínimo 4 caracteres')
-            }}</span>
+            <span class="error-msg">Mínimo 4 caracteres</span>
           }
         </div>
       </div>

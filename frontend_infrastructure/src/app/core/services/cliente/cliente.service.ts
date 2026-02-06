@@ -26,4 +26,15 @@ export class ClienteService implements ClienteRepository {
   create(cliente: Partial<Cliente>): Observable<BaseResponse<Cliente>> {
     return this.http.post<BaseResponse<Cliente>>(this.endpoint, cliente);
   }
+  update(id: number, cliente: Partial<Cliente>): Observable<BaseResponse<Cliente>> {
+    return this.http.put<BaseResponse<Cliente>>(`${this.endpoint}/${id}`, cliente);
+  }
+
+  patch(id: number, updates: Map<string, any> | any): Observable<BaseResponse<Cliente>> {
+  return this.http.patch<BaseResponse<Cliente>>(`${this.endpoint}/${id}`, updates);
+}
+
+  delete(id: number): Observable<BaseResponse<void>> {
+    return this.http.delete<BaseResponse<void>>(`${this.endpoint}/${id}`);
+  }
 }

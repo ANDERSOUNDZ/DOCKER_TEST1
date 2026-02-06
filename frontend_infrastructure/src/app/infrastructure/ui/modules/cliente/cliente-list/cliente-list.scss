@@ -1,8 +1,11 @@
+/* Contenedor Principal */
 .module-view {
-  position: relative; /* Indispensable para que el loading-overlay no flote por toda la pantalla */
-  min-height: 400px;  /* Para que el contenedor no se colapse si está vacío */
+  position: relative;
+  min-height: 400px;
+  animation: fadeIn 0.4s ease-out;
 }
-/* Cabecera Adaptable */
+
+/* Cabecera y Acciones Superiores */
 .module-header {
   display: flex;
   justify-content: space-between;
@@ -10,35 +13,36 @@
   margin-bottom: 2rem;
   flex-wrap: wrap;
   gap: 15px;
+
+  .module-title {
+    font-size: 1.5rem;
+    color: #333;
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+
+    .search-box input {
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      width: 300px;
+      outline: none;
+      transition: all 0.3s;
+
+      &:focus {
+        border-color: #f1c40f;
+        box-shadow: 0 0 0 3px rgba(241, 196, 15, 0.2);
+      }
+    }
+  }
 }
 
-.module-title {
-  font-size: 1.5rem;
-  color: #333;
-  margin: 0;
-}
-
-.header-actions {
-  display: flex;
-  gap: 15px;
-  align-items: center;
-}
-
-/* Buscador */
-.search-box input {
-  padding: 10px 15px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  width: 300px;
-  outline: none;
-  transition: border-color 0.3s;
-}
-
-.search-box input:focus {
-  border-color: #1a73e8;
-}
-
-/* Botón Amarillo/Dorado como en tu dibujo */
+/* Botón Principal (Nuevo Cliente) */
 .btn-primary {
   background-color: #f1c40f;
   color: #000;
@@ -48,63 +52,109 @@
   font-weight: 600;
   cursor: pointer;
   transition: background 0.3s;
+
+  &:hover {
+    background-color: #d4ac0d;
+  }
 }
 
-.btn-primary:hover {
-  background-color: #d4ac0d;
-}
-
-/* Estilos de la Tabla */
+/* Tabla de Datos */
 .table-container {
   background: white;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  overflow-x: auto; /* Responsive para tablas largas */
-}
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
 
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-}
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
 
-.data-table th {
-  background-color: #f8f9fa;
-  padding: 15px;
-  color: #666;
-  font-weight: 600;
-  border-bottom: 2px solid #eee;
-}
+    th {
+      background-color: #f8f9fa;
+      padding: 15px;
+      color: #666;
+      font-weight: 600;
+      border-bottom: 2px solid #eee;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+    }
 
-.data-table td {
-  padding: 15px;
-  border-bottom: 1px solid #eee;
-  color: #444;
+    td {
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+      color: #444;
+      vertical-align: middle;
+    }
+
+    .empty-row {
+      text-align: center;
+      padding: 3rem;
+      color: #999;
+      font-style: italic;
+    }
+  }
 }
 
 /* Badges de Estado */
 .badge {
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  background-color: #eee;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background-color: #f1f1f1;
+  color: #666;
+
+  &.active {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
 }
 
-.badge.active {
-  background-color: #e8f5e9;
-  color: #2e7d32;
+/* --- NUEVOS BOTONES DE ACCIÓN (TEXTO) --- */
+.action-buttons-text {
+  display: flex;
+  gap: 8px;
+
+  .btn-text {
+    background: none;
+    border: none;
+    padding: 6px 12px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+
+    /* Estilo Editar (Azul) */
+    &.edit {
+      color: #1a73e8;
+      &:hover {
+        background-color: rgba(26, 115, 232, 0.1);
+      }
+    }
+
+    /* Estilo Desactivar (Rojo) */
+    &.delete {
+      color: #d32f2f;
+      &:hover {
+        background-color: rgba(211, 47, 47, 0.1);
+      }
+    }
+
+    /* Estilo Activar (Verde) */
+    &.activate {
+      color: #2e7d32;
+      &:hover {
+        background-color: rgba(46, 125, 50, 0.1);
+      }
+    }
+  }
 }
 
-/* Botones de Acción */
-.btn-icon {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.1rem;
-  margin-right: 5px;
-  color: #888;
-}
-
+/* Loading Overlay */
 .loading-overlay {
   position: absolute;
   top: 0;
@@ -117,11 +167,20 @@
   align-items: center;
   justify-content: center;
   z-index: 100;
+  backdrop-filter: blur(2px);
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #f1c40f;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+  }
 }
 
-.btn-icon.edit:hover { color: #1a73e8; }
-.btn-icon.delete:hover { color: #d32f2f; }
-
+/* Paginación */
 .pagination-controls {
   display: flex;
   justify-content: space-between;
@@ -131,40 +190,48 @@
   border-top: 1px solid #eee;
 
   .pagination-info {
-    font-size: 0.9rem;
-    color: #666;
+    font-size: 0.85rem;
+    color: #777;
   }
 
   .pagination-buttons {
     display: flex;
-    gap: 5px;
+    gap: 4px;
 
     button {
-      padding: 5px 12px;
+      padding: 6px 12px;
       border: 1px solid #ddd;
       background: white;
       cursor: pointer;
       border-radius: 4px;
+      font-size: 0.9rem;
       transition: all 0.2s;
 
       &:hover:not(:disabled) {
-        background: #f1c40f;
+        background: #fff9db;
         border-color: #f1c40f;
       }
 
       &.active {
         background: #f1c40f;
         color: black;
-        font-weight: bold;
+        font-weight: 700;
         border-color: #d4ac0d;
       }
 
       &:disabled {
         cursor: not-allowed;
         color: #ccc;
+        background: #f9f9f9;
       }
     }
   }
+}
+
+/* Animaciones */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 @keyframes fadeIn {
