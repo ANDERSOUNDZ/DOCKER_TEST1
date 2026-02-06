@@ -1,0 +1,58 @@
+:host {
+  display: block;
+}
+
+.layout-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.layout-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Sidebar: Ancho fijo en escritorio */
+app-sidebar {
+  width: 240px;
+  border-right: 1px solid #e0e0e0;
+  background-color: #fff;
+}
+
+/* Contenido principal */
+.layout-content {
+  flex: 1;
+  padding: 24px;
+  background-color: #fafafa;
+  overflow-y: auto;
+}
+
+/* --- ADAPTABILIDAD (Responsive) --- */
+
+/* Para Tablets (menos de 992px) */
+@media (max-width: 992px) {
+  app-sidebar {
+    width: 200px;
+  }
+}
+
+/* Para Móviles (menos de 768px) */
+@media (max-width: 768px) {
+  .layout-body {
+    flex-direction: column; /* Apila el contenido si es necesario */
+  }
+
+  app-sidebar {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .layout-content {
+    padding: 15px;
+  }
+}

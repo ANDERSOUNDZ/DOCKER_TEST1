@@ -37,10 +37,14 @@ services:
   frontend:
     build: ./frontend_infrastructure
     container_name: bank_frontend
+    volumes:
+      - ./frontend_infrastructure:/app
+      - /app/node_modules
     ports:
-      - "90:80"
+      - "4200:4200"
     depends_on:
       - backend
+    command: ng serve --host 0.0.0.0 --poll 300
 
   pgadmin:
     image: dpage/pgadmin4:latest
