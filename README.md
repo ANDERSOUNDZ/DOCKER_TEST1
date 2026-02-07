@@ -13,10 +13,10 @@
 
 Applicacion Web Bancaria.
 Frontend / Clean Architecture
+![1A](./assets/img/13A.png)
 Backend / Hexagonal Architecture
-
+![1A](./assets/img/13B.png)
 ---
-
 ## Instrucciones de Ejecución
 
 Sigue estos pasos para levantar el entorno de desarrollo:
@@ -89,8 +89,8 @@ Funcionalidades Front End:
 4. Si el cupo disponible ya se cumplió no debe permitir realizar un débito y debe desplegar el mensaje "Cupo diario Excedido"
 ![4A](./assets/img/4A.png)
 5. Generar reporte (Estado de cuenta) especificando un rango de fechas y un cliente, visualice las cuentas asociadas con sus respectivos saldos y el total de débitos y créditos realizados durante las fechas de ese cliente. Tomar en consideración que también se debe obtener los resultados del reporte en formato base64 (PDF) y Json. Por ejemplo: (/reportes?fecha rango fechas)
+![5A](./assets/img/11A.png)
 ![5A](./assets/img/5A.png)
-![5B](./assets/img/5B.png)
 
 Funcionalidades Backend
 
@@ -98,4 +98,32 @@ Funcionalidades Backend
 ![6A](./assets/img/6A.png)
 ![6B](./assets/img/6B.png)
 ![6B](./assets/img/6C.png)
+
+2. Creacion de Cuentas:
+![7A](./assets/img/7A.png)
+![7B](./assets/img/7B.png)
+![7C](./assets/img/7C.png)
+
+3. Creacion Cuenta corriente para Jose Lema:
+![8B](./assets/img/8B.png)
+
+4. Realizar los movimientos:
+![9A](./assets/img/9A.png)
+![9B](./assets/img/9B.png)
+
+5. Listado de Movimiento por fechas y por usuario descarga de pdf (vista)
+![10A](./assets/img/10B.png)
+![10B](./assets/img/10A.png)
+![5B](./assets/img/5B.png)
+
+EndPoints
+
+Cliente
+![5B](./assets/img/12A.png)
+
+Cuenta
+![5B](./assets/img/12B.png)
+
+Movimiento
+![5B](./assets/img/12C.png)
 
