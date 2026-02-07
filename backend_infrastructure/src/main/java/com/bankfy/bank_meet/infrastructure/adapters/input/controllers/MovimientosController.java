@@ -52,7 +52,7 @@ public class MovimientosController {
             @RequestParam(required = false) Long cliente,
             @RequestParam(required = false) String fechaInicio,
             @RequestParam(required = false) String fechaFin,
-            @RequestParam(required = false) String search, // <-- NUEVO
+            @RequestParam(required = false) String search,
             @PageableDefault(size = 10) Pageable pageable) {
 
         Page<MovimientoResponseDTO> dtos = getUseCase
@@ -64,7 +64,7 @@ public class MovimientosController {
 
     @GetMapping("/reporte")
     public ResponseEntity<BaseResponse<ReporteEstadoCuentaDTO>> generarReporte(
-            @RequestParam String clienteId, // Cambiado a String
+            @RequestParam String clienteId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fin) {
 

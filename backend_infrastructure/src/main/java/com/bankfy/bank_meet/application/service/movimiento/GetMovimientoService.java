@@ -54,8 +54,6 @@ public class GetMovimientoService implements GetMovimientoUseCase {
         LocalDateTime fin = (fechaFin != null && !fechaFin.isEmpty())
                 ? LocalDate.parse(fechaFin).atTime(LocalTime.MAX)
                 : LocalDateTime.now().with(LocalTime.MAX);
-
-        // Si no hay cliente específico, usamos la búsqueda global mejorada
         if (clienteId == null) {
             return movimientoPersistencePort.findAllWithSearch(inicio, fin, search, pageable);
         }
