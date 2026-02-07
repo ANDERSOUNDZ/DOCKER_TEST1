@@ -69,7 +69,12 @@ Password: BankMeet2024!
 Save Password: (Marcado)
 
 -------
-Funcionalidades:
+BANKY TEST 1
+-------
+
+
+
+Funcionalidades Front End:
 
 1. Los valores cuando son crédito son positivos, y los débitos son negativos. Debe almacenarse el saldo disponible en cada transacción dependiendo del tipo de movimiento. (suma o resta)
 
@@ -80,9 +85,17 @@ Funcionalidades:
 2. Si el saldo es cero, y va a realizar una transacción débito, debe desplegar mensaje "Saldo no disponible".
 ![2A](./assets/img/2A.png)
 3. Se debe tener un parámetro de límite diario de retiro (valor tope 1000$)
-![3A](./assets/img/3A.png)
+![3A](./assets/img/3A.jpg)
 4. Si el cupo disponible ya se cumplió no debe permitir realizar un débito y debe desplegar el mensaje "Cupo diario Excedido"
 ![4A](./assets/img/4A.png)
 5. Generar reporte (Estado de cuenta) especificando un rango de fechas y un cliente, visualice las cuentas asociadas con sus respectivos saldos y el total de débitos y créditos realizados durante las fechas de ese cliente. Tomar en consideración que también se debe obtener los resultados del reporte en formato base64 (PDF) y Json. Por ejemplo: (/reportes?fecha rango fechas)
 ![5A](./assets/img/5A.png)
 ![5B](./assets/img/5B.png)
+
+Funcionalidades Backend
+
+1. Creacion de usuarios:
+![6A](./assets/img/6A.png)
+![6B](./assets/img/6B.png)
+![6B](./assets/img/6C.png)
+
