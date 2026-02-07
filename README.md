@@ -10,6 +10,10 @@
 ---
 
 ## Arquitectura de Contenedores
+---
+
+![1A](./assets/img/17A.png)
+---
 
 Applicacion Web Bancaria.
 Frontend / Clean Architecture
