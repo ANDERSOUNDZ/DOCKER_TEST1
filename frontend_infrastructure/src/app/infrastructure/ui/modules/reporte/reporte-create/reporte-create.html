@@ -1,43 +1,88 @@
-<div class="module-view">
+<div class="module-view animate-fadeIn">
   <header class="module-header">
-    <h2 class="module-title">Reportes de Estado de Cuenta</h2>
+    <h2 class="module-title">Generar Reporte de Cuenta</h2>
   </header>
 
-  <div class="filter-card">
-    <div class="filter-grid">
-      <div class="form-group">
-        <label>Cliente ID</label>
-        <input type="number" [(ngModel)]="filtros.clienteId" placeholder="Ej: 1" />
+  <div class="form-card animate-fadeIn">
+    <div class="form-header">
+      <h3>Filtros de Reporte</h3>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="generarReporte()" class="form-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Cliente ID</label>
+          <input type="number" formControlName="clienteId" [class.error]="isInvalid('clienteId')" placeholder="Ej: 27" />
+          @if (isInvalid('clienteId')) {
+            <span class="error-msg">ID requerido</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label>Fecha Inicio</label>
+          <input
+            type="date"
+            formControlName="inicio"
+            [max]="today"
+            [class.error]="isInvalid('inicio')"
+          />
+          @if (isInvalid('inicio')) {
+            <span class="error-msg">
+              {{ form.get('inicio')?.hasError('fechaFutura') ? 'La fecha no puede ser futura' : 'Fecha requerida' }}
+            </span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label>Fecha Fin</label>
+          <input type="date" formControlName="fin" [max]="today" [class.error]="isInvalid('fin')" />
+          @if (isInvalid('fin')) {
+            <span class="error-msg">
+              {{ form.get('fin')?.hasError('fechaFutura') ? 'La fecha no puede ser futura' : 'Fecha requerida' }}
+            </span>
+          }
+        </div>
       </div>
-      <div class="form-group">
-        <label>Fecha Inicio</label>
-        <input type="date" [(ngModel)]="filtros.inicio" />
-      </div>
-      <div class="form-group">
-        <label>Fecha Fin</label>
-        <input type="date" [(ngModel)]="filtros.fin" />
-      </div>
-      <div class="filter-actions">
-        <button class="btn-primary" (click)="generarReporte()" [disabled]="loading()">
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" [disabled]="form.invalid || loading()">
           {{ loading() ? 'Generando...' : 'Generar Reporte' }}
         </button>
       </div>
-    </div>
+    </form>
   </div>
 
   @if (reporte()) {
     <div class="report-result animate-fadeIn">
-      <div class="summary-cards">
-        <div class="card credit">
-          <small>Total Créditos (Depósitos)</small>
-          <h3>{{ reporte()?.totalCreditos | currency: 'USD' }}</h3>
+      
+      <div class="report-header-info">
+        <div class="client-details">
+          <span class="label">Cliente Titular</span>
+          <h2 class="client-name">{{ reporte()?.cliente }}</h2>
         </div>
-        <div class="card debit">
-          <small>Total Débitos (Retiros)</small>
-          <h3>{{ reporte()?.totalDebitos | currency: 'USD' }}</h3>
+        <div class="range-details">
+          <span class="label">Periodo del Reporte</span>
+          <p>{{ form.get('inicio')?.value | date:'dd/MM/yyyy' }} — {{ form.get('fin')?.value | date:'dd/MM/yyyy' }}</p>
         </div>
-        <div class="card action">
-          <button class="btn-download" (click)="descargarPdf()">Descargar PDF Oficial</button>
+      </div>
+
+      <div class="summary-card-unified">
+        <div class="summary-section">
+          <div class="total-item credit">
+            <small>Total Créditos (Depósitos)</small>
+            <p>{{ reporte()?.totalCreditos | currency: 'USD' }}</p>
+          </div>
+          <div class="divider-vertical"></div>
+          <div class="total-item debit">
+            <small>Total Débitos (Retiros)</small>
+            <p>{{ reporte()?.totalDebitos | currency: 'USD' }}</p>
+          </div>
+        </div>
+        <div class="action-section">
+          <button type="button" class="btn-pdf-blue" (click)="descargarPdf()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Descargar PDF Oficial
+          </button>
         </div>
       </div>
 
@@ -47,21 +92,29 @@
             <tr>
               <th>Fecha</th>
               <th>N° Cuenta</th>
-              <th>Tipo</th>
+              <th>Tipo Mov.</th>
+              <th>Saldo Inicial</th>
               <th>Movimiento</th>
-              <th>Saldo</th>
+              <th>Saldo Disponible</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let mov of reporte()?.movimientos">
-              <td>{{ mov.fecha }}</td>
-              <td>{{ mov.cuenta?.numeroCuenta }}</td>
-              <td>{{ mov.tipoMovimiento }}</td>
-              <td [ngClass]="mov.movimiento < 0 ? 'text-danger' : 'text-success'">
-                {{ mov.movimiento | currency }}
-              </td>
-              <td>{{ mov.saldo | currency }}</td>
-            </tr>
+            @for (mov of reporte()?.movimientos; track mov.id) {
+              <tr>
+                <td>{{ mov.fecha }}</td>
+                <td><strong>{{ mov.cuenta?.numeroCuenta }}</strong></td>
+                <td>
+                  <span class="badge" [ngClass]="mov.movimiento < 0 ? 'bg-red' : 'bg-green'">
+                    {{ mov.movimiento < 0 ? 'Retiro' : 'Depósito' }}
+                  </span>
+                </td>
+                <td>{{ mov.saldo - mov.movimiento | currency: 'USD' }}</td>
+                <td [ngClass]="mov.movimiento < 0 ? 'text-danger' : 'text-success'" class="fw-bold">
+                  {{ mov.movimiento | currency: 'USD' }}
+                </td>
+                <td><strong>{{ mov.saldo | currency: 'USD' }}</strong></td>
+              </tr>
+            }
           </tbody>
         </table>
       </div>

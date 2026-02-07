@@ -2,27 +2,26 @@
   @if (state.isLoading()) {
     <div class="loading-overlay">
       <div class="spinner"></div>
-      <p>Consultando movimientos...</p>
+      <p>Cargando movimientos...</p>
     </div>
   }
 
   <header class="module-header">
     <h2 class="module-title">Historial de Movimientos</h2>
+
     <div class="header-actions">
+      <div class="search-box">
+        <input
+          type="text"
+          placeholder="Buscar por número de cuenta..."
+          [value]="searchQuery()"
+          (input)="onSearch($event)"
+        />
+      </div>
+
       @if (!showForm()) {
         <button class="btn-primary" (click)="openCreate()">Nueva Transacción</button>
       }
-
-      <div class="filter-group-horizontal">
-        <input
-          type="number"
-          [(ngModel)]="clienteId"
-          (keyup.enter)="loadMovimientos(0)"
-          placeholder="ID Cliente"
-          class="input-styled"
-        />
-        <button class="btn-search" (click)="loadMovimientos(0)">Buscar</button>
-      </div>
     </div>
   </header>
 
@@ -45,7 +44,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (mov of state.items(); track $index) {
+        @for (mov of sortedItems(); track $index) {
           <tr>
             <td>{{ mov.Fecha }}</td>
             <td>{{ mov.Tipo }}</td>
@@ -73,49 +72,46 @@
           </tr>
         } @empty {
           <tr>
-            <td colspan="7" class="empty-row">
-              No se encontraron movimientos para los criterios seleccionados.
-            </td>
+            <td colspan="7" class="empty-row">No se encontraron movimientos.</td>
           </tr>
         }
       </tbody>
     </table>
 
-    @if (state.items().length > 0) {
-      <div class="pagination-controls">
-        <div class="pagination-info">
-          Mostrando página {{ state.paginationMovimientos().currentPage + 1 }} de
-          {{ state.paginationMovimientos().totalPages }}
-        </div>
-
-        <div class="pagination-buttons">
-          <button
-            [disabled]="state.paginationMovimientos().currentPage === 0"
-            (click)="loadMovimientos(state.paginationMovimientos().currentPage - 1)"
-          >
-            Anterior
-          </button>
-
-          @for (p of [].constructor(state.paginationMovimientos().totalPages); track $index) {
-            <button
-              [class.active]="$index === state.paginationMovimientos().currentPage"
-              (click)="loadMovimientos($index)"
-            >
-              {{ $index + 1 }}
-            </button>
-          }
-
-          <button
-            [disabled]="
-              state.paginationMovimientos().currentPage ===
-              state.paginationMovimientos().totalPages - 1
-            "
-            (click)="loadMovimientos(state.paginationMovimientos().currentPage + 1)"
-          >
-            Siguiente
-          </button>
-        </div>
+    <div class="pagination-controls">
+      <div class="pagination-info">
+        Mostrando
+        {{ state.paginationMovimientos().currentPage * state.paginationMovimientos().pageSize + 1 }} a
+        {{ (state.paginationMovimientos().currentPage + 1) * state.paginationMovimientos().pageSize }} de
+        {{ state.paginationMovimientos().totalElements }} movimientos
       </div>
-    }
+
+      <div class="pagination-buttons">
+        <button
+          [disabled]="state.paginationMovimientos().currentPage === 0"
+          (click)="goToPage(state.paginationMovimientos().currentPage - 1)"
+        >
+          Anterior
+        </button>
+
+        @for (p of [].constructor(state.paginationMovimientos().totalPages); track $index) {
+          <button
+            [class.active]="$index === state.paginationMovimientos().currentPage"
+            (click)="goToPage($index)"
+          >
+            {{ $index + 1 }}
+          </button>
+        }
+
+        <button
+          [disabled]="
+            state.paginationMovimientos().currentPage === state.paginationMovimientos().totalPages - 1
+          "
+          (click)="goToPage(state.paginationMovimientos().currentPage + 1)"
+        >
+          Siguiente
+        </button>
+      </div>
+    </div>
   </div>
 </div>

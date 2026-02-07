@@ -1,46 +1,51 @@
-/* Reutilizamos la base de tu diseño corporativo */
+/* Contenedor Principal */
 .module-view {
   position: relative;
   min-height: 400px;
   animation: fadeIn 0.4s ease-out;
 }
 
+/* Cabecera y Acciones Superiores */
 .module-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
-  flex-wrap: wrap;
-  gap: 15px;
+  gap: 20px;
 
   .module-title {
     font-size: 1.5rem;
     color: #333;
+    margin: 0;
     font-weight: 700;
   }
-}
 
-/* Estilo para los filtros en la cabecera */
-.filter-group-horizontal {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  background: #f8f9fa;
-  padding: 8px 15px;
-  border-radius: 8px;
-  border: 1px solid #eee;
+  .header-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex: 1;
+    justify-content: flex-end;
 
-  .input-styled {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    outline: none;
-    &:focus { border-color: #f1c40f; }
+    .search-box input {
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      width: 250px;
+      outline: none;
+      transition: all 0.3s;
+
+      &:focus {
+        border-color: #f1c40f;
+        box-shadow: 0 0 0 3px rgba(241, 196, 15, 0.2);
+      }
+    }
   }
 }
 
+/* Botón Principal */
 .btn-primary {
+  flex-shrink: 0; // Evita que se encoja o solape
   background-color: #f1c40f;
   color: #000;
   border: none;
@@ -48,11 +53,16 @@
   border-radius: 6px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s;
-  &:hover { background-color: #d4ac0d; }
+  transition: all 0.3s;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: #d4ac0d;
+    transform: translateY(-1px);
+  }
 }
 
-/* Tabla */
+/* Tabla de Datos */
 .table-container {
   background: white;
   border-radius: 8px;
@@ -62,6 +72,8 @@
   .data-table {
     width: 100%;
     border-collapse: collapse;
+    text-align: left;
+
     th {
       background-color: #f8f9fa;
       padding: 15px;
@@ -70,12 +82,32 @@
       border-bottom: 2px solid #eee;
       text-transform: uppercase;
       font-size: 0.75rem;
+      letter-spacing: 0.5px;
     }
+
     td {
       padding: 15px;
       border-bottom: 1px solid #eee;
       color: #444;
+      vertical-align: middle;
     }
+
+    /* Estilo para la celda de información (Nombre y Documento) */
+    .info-cell {
+      display: flex;
+      flex-direction: column;
+      
+      span {
+        font-weight: 600;
+        color: #333;
+      }
+      
+      small {
+        color: #888;
+        font-size: 0.75rem;
+      }
+    }
+
     .empty-row {
       text-align: center;
       padding: 3rem;
@@ -85,25 +117,71 @@
   }
 }
 
+/* Badges */
 .badge {
   padding: 4px 10px;
   border-radius: 20px;
   font-size: 0.75rem;
   font-weight: 600;
-  background-color: #ffebee; // Default Retiro
-  color: #c62828;
+  background-color: #fdf2f2;
+  color: #c0392b; // Estilo para Retiro
 
   &.active {
-    background-color: #e8f5e9; // Depósito
-    color: #2e7d32;
+    background-color: #eafaf1;
+    color: #2e7d32; // Estilo para Depósito
   }
 }
 
-.text-success { color: #2e7d32; }
-.text-danger { color: #d32f2f; }
+/* Colores de Montos */
+.text-danger { color: #d32f2f !important; }
+.text-success { color: #2e7d32 !important; }
 .fw-bold { font-weight: 700; }
 
-/* Cargador y Paginación (Igual que Cuentas) */
+/* Paginación (Sincronizada con Cuentas) */
+.pagination-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-top: 1px solid #eee;
+
+  .pagination-info { font-size: 0.85rem; color: #777; }
+
+  .pagination-buttons {
+    display: flex;
+    gap: 4px;
+
+    button {
+      padding: 6px 12px;
+      border: 1px solid #ddd;
+      background: white;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s;
+
+      &:hover:not(:disabled) {
+        background: #fff9db;
+        border-color: #f1c40f;
+      }
+
+      &.active {
+        background: #f1c40f;
+        color: black;
+        font-weight: 700;
+        border-color: #d4ac0d;
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+        color: #ccc;
+        background: #f9f9f9;
+      }
+    }
+  }
+}
+
+/* Loading y Animaciones */
 .loading-overlay {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -113,35 +191,14 @@
   align-items: center;
   justify-content: center;
   z-index: 100;
-  backdrop-filter: blur(2px);
-
   .spinner {
     width: 40px; height: 40px;
     border: 4px solid #f3f3f3;
     border-top: 4px solid #f1c40f;
     border-radius: 50%;
     animation: spin 1s linear infinite;
-    margin-bottom: 10px;
-  }
-}
-
-.pagination-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  background: #f8f9fa;
-  .pagination-buttons button {
-    padding: 6px 12px;
-    margin-left: 5px;
-    border: 1px solid #ddd;
-    background: white;
-    border-radius: 4px;
-    cursor: pointer;
-    &:disabled { color: #ccc; cursor: not-allowed; }
-    &:hover:not(:disabled) { background: #fff9db; border-color: #f1c40f; }
   }
 }
 
 @keyframes spin { 100% { transform: rotate(360deg); } }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }

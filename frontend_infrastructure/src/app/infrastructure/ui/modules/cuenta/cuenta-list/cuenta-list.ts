@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { CuentaRepository } from '../../../../../domain/repository/cuenta/cuenta.repository';
 import { AppStateService } from '../../../../../core/services/state/app-state.service';
 import { Alert } from '../../../../../core/services/alert/alert';
-import { Cuenta } from '../../../../../domain/models/cuenta/cuenta';
 import { CuentaForm } from '../cuenta-form/cuenta-form';
 import { Observable } from 'rxjs';
 
