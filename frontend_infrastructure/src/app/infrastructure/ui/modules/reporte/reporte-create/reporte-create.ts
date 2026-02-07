@@ -32,7 +32,6 @@ export class ReporteCreate {
   ngOnInit(): void {
     this.form = this.fb.group({
       clienteId: [null, [Validators.required, Validators.min(1)]],
-      // Añadimos el validador personalizado
       inicio: ['', [Validators.required, this.fechaMaximaHoy]],
       fin: ['', [Validators.required, this.fechaMaximaHoy]],
     });
