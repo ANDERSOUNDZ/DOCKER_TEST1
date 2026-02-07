@@ -14,44 +14,33 @@ import { MovimientoForm } from '../movimiento-form/movimiento-form';
 })
 export class MovimientoList implements OnInit {
   private movRepo = inject(MovimientoRepository);
-  public state = inject(AppStateService); // Usamos el estado global
+  public state = inject(AppStateService);
   private notify = inject(Alert);
 
   showForm = signal(false);
 
-  // Ya no usamos un signal local para searchQuery, usamos state.searchQuery()
-
   sortedItems = computed(() => {
-    // Tomamos los movimientos directamente del estado global
     return [...this.state.movimientos()];
   });
 
   ngOnInit(): void {
-    // Al iniciar, cargamos usando lo que ya esté en el estado (página y búsqueda)
     this.loadMovimientos(this.state.searchQuery(), this.state.paginationMovimientos().currentPage);
   }
 
-  /**
-   * Carga con persistencia de estado
-   */
   loadMovimientos(
     search: string = this.state.searchQuery(),
     page: number = this.state.paginationMovimientos().currentPage,
   ) {
     this.state.setLoading(true);
-
-    // Si el término de búsqueda cambió, reseteamos a la página 0
     if (search !== this.state.searchQuery()) {
       page = 0;
     }
 
-    // Guardamos en el estado global para que persista si navegamos a otra ruta
     this.state.setSearchQuery(search);
     this.state.setPageMovimientos(page);
 
     this.movRepo.getByFilters(null, '', '', page, search).subscribe({
       next: (res: any) => {
-        // Importante: Usar setMovimientos (el método específico de tu state)
         const content = res?.data?.content || res?.content || [];
         this.state.setMovimientos(content);
 
@@ -74,13 +63,10 @@ export class MovimientoList implements OnInit {
   onSearch(event: Event): void {
     const element = event.target as HTMLInputElement;
 
-    // Expresión regular: busca todo lo que NO sea un dígito (\D) y lo reemplaza por vacío
     const numericValue = element.value.replace(/\D/g, '');
 
-    // Actualizamos el valor visual del input por si el usuario pegó letras
     element.value = numericValue;
 
-    // Si el valor numérico es diferente al que ya teníamos, disparamos la carga
     if (numericValue !== this.state.searchQuery()) {
       this.loadMovimientos(numericValue, 0);
     }

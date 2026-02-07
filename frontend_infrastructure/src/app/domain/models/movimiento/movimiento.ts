@@ -1,11 +1,11 @@
-import { Cuenta } from "../cuenta/cuenta";
+import { Cuenta } from '../cuenta/cuenta';
 
 export interface Movimiento {
   id?: number;
   fecha: string;
-  tipoMovimiento: string; // Faltaba este
-  movimiento: number;    // El backend lo mapea como @JsonProperty("movimiento")
+  tipoMovimiento: string;
+  movimiento: number;
   saldoAnterior: number;
-  saldo: number;         // Faltaba este
+  saldo: number;
   cuenta: Cuenta;
 }

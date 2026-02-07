@@ -5,5 +5,5 @@ import java.time.LocalDateTime;
 import com.bankfy.bank_meet.infrastructure.adapters.input.dtos.movimiento.ReporteEstadoCuentaDTO;
 
 public interface GetReporteUseCase {
-    ReporteEstadoCuentaDTO generarReporte(Long clienteId, LocalDateTime inicio, LocalDateTime fin);
+    ReporteEstadoCuentaDTO generarReporte(String clienteId, LocalDateTime inicio, LocalDateTime fin);
 }

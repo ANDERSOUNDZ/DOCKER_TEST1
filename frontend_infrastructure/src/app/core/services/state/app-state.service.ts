@@ -16,7 +16,6 @@ const initialPagination = (): PaginationState => ({
 
 @Injectable({ providedIn: 'root' })
 export class AppStateService {
-  // --- SEÑALES PRIVADAS SEPARADAS ---
   private _clientes = signal<any[]>([]);
   private _cuentas = signal<any[]>([]);
   private _movimientos = signal<any[]>([]);
@@ -24,13 +23,10 @@ export class AppStateService {
   private _loading = signal<boolean>(false);
   private _searchQuery = signal<string>('');
 
-  // Estados de paginación independientes
   private _paginationClientes = signal<PaginationState>(initialPagination());
   private _paginationCuentas = signal<PaginationState>(initialPagination());
   private _paginationMovimientos = signal<PaginationState>(initialPagination());
 
-  // --- SEÑALES PÚBLICAS (Readonly) ---
-  // Mantenemos 'items' apuntando a clientes para no romper tu ClienteList y CuentaList actuales
   public items = this._clientes.asReadonly();
   public clientes = this._clientes.asReadonly();
   public cuentas = this._cuentas.asReadonly();
@@ -43,9 +39,6 @@ export class AppStateService {
   public paginationCuentas = this._paginationCuentas.asReadonly();
   public paginationMovimientos = this._paginationMovimientos.asReadonly();
 
-  // --- MÉTODOS DE ACTUALIZACIÓN ---
-
-  // Este método lo siguen usando tus componentes actuales
   setItems(data: any[]) {
     this._clientes.set(data);
   }
@@ -69,8 +62,6 @@ export class AppStateService {
   setSearchQuery(query: string) {
     this._searchQuery.set(query);
   }
-
-  // --- MÉTODOS DE PAGINACIÓN ---
 
   setPaginationClientes(data: PaginationState) {
     this._paginationClientes.set(data);

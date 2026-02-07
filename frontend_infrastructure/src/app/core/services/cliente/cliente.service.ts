@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { API_URL } from '../../../core/providers/api-url.token'; // Importamos el token
+import { API_URL } from '../../../core/providers/api-url.token';
 import { ClienteRepository } from '../../../domain/repository/cliente/cliente.repository';
 import { BaseResponse, Cliente, Page } from '../../../domain/models/cliente/cliente.model';
 

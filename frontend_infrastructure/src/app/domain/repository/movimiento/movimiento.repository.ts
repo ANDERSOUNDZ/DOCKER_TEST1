@@ -7,8 +7,8 @@ export abstract class MovimientoRepository {
     fechaInicio?: string,
     fechaFin?: string,
     page?: number,
-    search?: string, // <--- Agregar esto como 5to parámetro
-  ): Observable<any>;// Cambiamos a any porque ahora devuelve un objeto con paginación (content, totalPages, etc)
+    search?: string,
+  ): Observable<any>;
 
   abstract create(movimiento: any): Observable<Movimiento>;
 

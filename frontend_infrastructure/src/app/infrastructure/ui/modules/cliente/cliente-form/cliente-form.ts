@@ -38,7 +38,6 @@ export class ClienteForm implements OnInit {
       this.form.get('identificacion')?.disable();
       this.form.get('contrasena')?.disable();
 
-      // Activar validación de estado solo para edición
       this.form.get('estado')?.setValidators([Validators.required]);
       this.form.get('estado')?.updateValueAndValidity();
 
@@ -51,7 +50,7 @@ export class ClienteForm implements OnInit {
 
   submit() {
     if (this.form.invalid) {
-      this.form.markAllAsTouched(); // Esto fuerza la aparición de errores visuales locales
+      this.form.markAllAsTouched();
       return;
     }
 
@@ -73,8 +72,6 @@ export class ClienteForm implements OnInit {
       },
       error: (err) => {
         const apiError = err.error;
-
-        // Manejo de errores de validación del Backend (HTTP 400)
         if (err.status === 400 && typeof apiError.message === 'object') {
           Object.keys(apiError.message).forEach((field) => {
             const control = this.form.get(field);
@@ -83,9 +80,7 @@ export class ClienteForm implements OnInit {
               control.markAsTouched();
             }
           });
-        }
-        // Manejo de errores globales (HTTP 409, 500, etc.)
-        else {
+        } else {
           const msg = apiError?.message || 'Error inesperado en el servidor';
           this.notify.show(msg, 'error');
         }
@@ -117,7 +112,7 @@ export class ClienteForm implements OnInit {
       ctrl?.setValidators([Validators.required, Validators.minLength(4)]);
     } else {
       ctrl?.disable();
-      ctrl?.setValue(''); // Limpiamos si se arrepiente
+      ctrl?.setValue('');
       ctrl?.clearValidators();
     }
     ctrl?.updateValueAndValidity();

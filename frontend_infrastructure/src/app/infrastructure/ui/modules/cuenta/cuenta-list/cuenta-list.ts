@@ -21,12 +21,9 @@ export class CuentaList implements OnInit {
   showForm = false;
   selectedCuenta = signal<any | null>(null);
 
-  // LÓGICA DE ORDENAMIENTO ÚNICAMENTE
   sortedItems = computed(() => {
-    // Tomamos las cuentas del estado (ya filtradas por el servidor)
     const items = [...this.state.cuentas()];
 
-    // Solo ordenamos por estado y ID
     return items.sort((a, b) => {
       if (a.estado !== b.estado) return a.estado ? -1 : 1;
       return b.id - a.id;
@@ -37,16 +34,12 @@ export class CuentaList implements OnInit {
     this.loadCuentas();
   }
 
-  /**
-   * Carga las cuentas desde el servidor aplicando búsqueda y paginación
-   */
   loadCuentas(
     search: string = this.state.searchQuery(),
     page: number = this.state.paginationCuentas().currentPage,
   ): void {
     this.state.setLoading(true);
 
-    // Si el texto de búsqueda cambió, forzamos el regreso a la página 0
     if (search !== this.state.searchQuery()) {
       page = 0;
     }
@@ -54,7 +47,6 @@ export class CuentaList implements OnInit {
     this.state.setSearchQuery(search);
     this.state.setPageCuentas(page);
 
-    // Enviamos 'search' al repositorio para búsqueda global en DB
     this.cuentaRepo.getAll(page, this.state.paginationCuentas().pageSize, search).subscribe({
       next: (res: any) => {
         const content = res?.data?.content || res?.content || [];
@@ -74,7 +66,6 @@ export class CuentaList implements OnInit {
 
   onSearch(event: Event): void {
     const element = event.target as HTMLInputElement;
-    // Llamamos a la carga del servidor con el nuevo término
     this.loadCuentas(element.value, 0);
   }
 

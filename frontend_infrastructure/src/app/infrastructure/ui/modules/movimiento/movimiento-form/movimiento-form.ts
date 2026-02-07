@@ -31,7 +31,7 @@ export class MovimientoForm {
 
   save() {
     if (this.form.invalid) {
-      this.form.markAllAsTouched(); // Esto activa los mensajes de error visuales
+      this.form.markAllAsTouched();
       return;
     }
 

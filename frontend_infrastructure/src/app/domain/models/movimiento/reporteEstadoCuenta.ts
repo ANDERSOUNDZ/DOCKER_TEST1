@@ -1,4 +1,4 @@
-import { Movimiento } from "./movimiento";
+import { Movimiento } from './movimiento';
 
 export interface ReporteEstadoCuenta {
   cliente: string;
@@ -6,5 +6,5 @@ export interface ReporteEstadoCuenta {
   movimientos: Movimiento[];
   totalCreditos: number;
   totalDebitos: number;
-  pdfBase64: string; // El PDF que viene del backend
+  pdfBase64: string;
 }

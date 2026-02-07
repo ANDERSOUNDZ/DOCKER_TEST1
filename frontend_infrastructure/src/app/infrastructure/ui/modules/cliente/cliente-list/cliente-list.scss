@@ -1,11 +1,9 @@
-/* Contenedor Principal */
 .module-view {
   position: relative;
   min-height: 400px;
   animation: fadeIn 0.4s ease-out;
 }
 
-/* Cabecera y Acciones Superiores */
 .module-header {
   display: flex;
   justify-content: space-between;
@@ -42,7 +40,6 @@
   }
 }
 
-/* Botón Principal (Nuevo Cliente) */
 .btn-primary {
   background-color: #f1c40f;
   color: #000;
@@ -58,7 +55,6 @@
   }
 }
 
-/* Tabla de Datos */
 .table-container {
   background: white;
   border-radius: 8px;
@@ -97,7 +93,6 @@
   }
 }
 
-/* Badges de Estado */
 .badge {
   padding: 4px 10px;
   border-radius: 20px;
@@ -112,7 +107,6 @@
   }
 }
 
-/* --- NUEVOS BOTONES DE ACCIÓN (TEXTO) --- */
 .action-buttons-text {
   display: flex;
   gap: 8px;
@@ -128,7 +122,6 @@
     transition: all 0.2s ease;
     text-decoration: none;
 
-    /* Estilo Editar (Azul) */
     &.edit {
       color: #1a73e8;
       &:hover {
@@ -136,7 +129,6 @@
       }
     }
 
-    /* Estilo Desactivar (Rojo) */
     &.delete {
       color: #d32f2f;
       &:hover {
@@ -144,7 +136,6 @@
       }
     }
 
-    /* Estilo Activar (Verde) */
     &.activate {
       color: #2e7d32;
       &:hover {
@@ -154,7 +145,6 @@
   }
 }
 
-/* Loading Overlay */
 .loading-overlay {
   position: absolute;
   top: 0;
@@ -180,7 +170,6 @@
   }
 }
 
-/* Paginación */
 .pagination-controls {
   display: flex;
   justify-content: space-between;
@@ -243,7 +232,6 @@
   &:hover { background-color: #f1f1f1; }
 }
 
-/* Animaciones */
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }

@@ -27,7 +27,6 @@ export class ReporteCreate {
   loading = signal(false);
   reporte = signal<ReporteEstadoCuenta | null>(null);
 
-  // Variable para limitar el calendario en el HTML
   today = new Date().toISOString().split('T')[0];
 
   ngOnInit(): void {
@@ -39,7 +38,6 @@ export class ReporteCreate {
     });
   }
 
-  // Validador personalizado
   fechaMaximaHoy(control: AbstractControl): ValidationErrors | null {
     if (!control.value) return null;
 
@@ -54,7 +52,6 @@ export class ReporteCreate {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
 
-      // Mensaje específico si es por la fecha
       if (
         this.form.errors?.['fechaFutura'] ||
         this.form.get('inicio')?.hasError('fechaFutura') ||

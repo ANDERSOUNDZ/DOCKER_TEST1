@@ -1,4 +1,3 @@
-/* Fondo oscuro translúcido */
 .modal-backdrop {
   position: fixed;
   top: 0;
@@ -14,7 +13,6 @@
   animation: fadeIn 0.3s ease;
 }
 
-/* Caja del formulario */
 .modal-content {
   background: white;
   width: 100%;
@@ -50,7 +48,6 @@
   }
 }
 
-/* Cuadrícula del formulario (2 columnas) */
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -86,12 +83,10 @@
   }
 }
 
-/* Campo que ocupa todo el ancho (Dirección) */
 .full-width {
   grid-column: span 2;
 }
 
-/* Botones de acción */
 .form-actions {
   margin-top: 2rem;
   display: flex;
@@ -109,7 +104,6 @@
   &:hover { background: #ddd; }
 }
 
-/* Reutilizamos tu btn-primary del dibujo */
 .btn-primary {
   background-color: #f1c40f;
   color: #000;
@@ -135,7 +129,6 @@
   font-weight: 500;
 }
 
-/* Animaciones */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }

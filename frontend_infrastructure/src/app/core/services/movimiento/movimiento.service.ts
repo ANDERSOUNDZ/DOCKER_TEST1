@@ -11,16 +11,10 @@ export class MovimientoService implements MovimientoRepository {
   private apiUrl = inject(API_URL);
   private endpoint = `${this.apiUrl}/movimientos`;
 
-  /**
-   * Crea un nuevo movimiento (Depósito/Retiro)
-   */
   create(movimiento: Partial<any>): Observable<Movimiento> {
     return this.http.post<any>(this.endpoint, movimiento).pipe(map((res) => res.data));
   }
 
-  /**
-   * Genera el reporte de estado de cuenta
-   */
   getReporte(clienteId: number, inicio: string, fin: string): Observable<any> {
     const params = new HttpParams()
       .set('clienteId', clienteId.toString())
@@ -30,9 +24,6 @@ export class MovimientoService implements MovimientoRepository {
     return this.http.get<any>(`${this.endpoint}/reporte`, { params }).pipe(map((res) => res.data));
   }
 
-  /**
-   * Reversa un movimiento por su ID
-   */
   reverse(id: number): Observable<Movimiento> {
     return this.http.post<any>(`${this.endpoint}/reversar/${id}`, {}).pipe(map((res) => res.data));
   }
@@ -42,14 +33,14 @@ export class MovimientoService implements MovimientoRepository {
     fechaInicio?: string,
     fechaFin?: string,
     page: number = 0,
-    search?: string, // <--- Recibir parámetro
+    search?: string,
   ): Observable<any> {
     let params = new HttpParams().set('page', page.toString()).set('size', '10');
 
     if (clienteId) params = params.set('cliente', clienteId.toString());
     if (fechaInicio) params = params.set('fechaInicio', fechaInicio);
     if (fechaFin) params = params.set('fechaFin', fechaFin);
-    if (search) params = params.set('search', search); // <--- Enviar al Backend
+    if (search) params = params.set('search', search);
 
     return this.http.get<any>(this.endpoint, { params }).pipe(map((res) => res.data));
   }

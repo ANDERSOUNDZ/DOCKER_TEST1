@@ -42,10 +42,13 @@ class ReporteServiceTest {
         // --- ARRANGE ---
         LocalDateTime inicio = LocalDateTime.now().minusDays(1);
         LocalDateTime fin = LocalDateTime.now();
-        Long clienteId = 1L;
+
+        String clienteCodigo = "423956470";
+        Long idInternoDB = 1L;
 
         Cliente cliente = new Cliente();
-        cliente.setId(clienteId);
+        cliente.setId(idInternoDB);
+        cliente.setClienteId(clienteCodigo);
         cliente.setNombre("Jose Lema");
 
         Cuenta cuenta = new Cuenta();
@@ -55,20 +58,18 @@ class ReporteServiceTest {
 
         Movimiento mov = new Movimiento();
         mov.setFecha(LocalDateTime.now());
-        mov.setValor(new BigDecimal("-575.00")); // Débito
+        mov.setValor(new BigDecimal("-575.00"));
         mov.setSaldoAnterior(new BigDecimal("2000.00"));
         mov.setSaldo(new BigDecimal("1425.00"));
         mov.setCuenta(cuenta);
 
-        // Mocks
-        when(clientePersistencePort.findById(clienteId)).thenReturn(Optional.of(cliente));
-        when(movimientoPersistencePort.findByClienteAndFechaRange(eq(clienteId), any(), any()))
+        when(clientePersistencePort.findByClienteId(clienteCodigo))
+                .thenReturn(Optional.of(cliente));
+        when(movimientoPersistencePort.findByClienteAndFechaRange(eq(idInternoDB), any(), any()))
                 .thenReturn(List.of(mov));
-
         // --- ACT ---
-        ReporteEstadoCuentaDTO reporte = generarReporteService.generarReporte(clienteId, inicio, fin);
-
-        // --- ASSERT ---
+        ReporteEstadoCuentaDTO reporte = generarReporteService.generarReporte(clienteCodigo, inicio, fin);
+        // --- ASSERT
         assertNotNull(reporte);
         assertEquals("Jose Lema", reporte.getCliente());
 

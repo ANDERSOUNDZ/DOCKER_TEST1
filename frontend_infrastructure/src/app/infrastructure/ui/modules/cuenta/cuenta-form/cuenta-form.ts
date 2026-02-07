@@ -31,7 +31,7 @@ export class CuentaForm implements OnInit {
   form: FormGroup;
   loading = signal(false);
   tiposCuenta = ['Ahorros', 'Corriente', 'Ahorro Programado', 'Poliza'];
-  clientesList = signal<any[]>([]); // Para el buscador de clientes
+  clientesList = signal<any[]>([]);
 
   constructor() {
     this.form = this.fb.group({
@@ -45,26 +45,20 @@ export class CuentaForm implements OnInit {
     this.cargarClientes();
 
     if (this.cuentaData) {
-      // Intentamos obtener el ID del cliente.
-      // Si el backend no lo envía directo, a veces viene como 'id_cliente' o dentro de un objeto.
       const idCliente = this.cuentaData.clienteId || (this.cuentaData as any).id_cliente;
 
       this.form.patchValue({
         tipoCuenta: this.cuentaData.tipoCuenta,
-        // Mapeamos saldoActual del DTO Java al campo del formulario
         saldoInicial: (this.cuentaData as any).saldoActual ?? this.cuentaData.saldoInicial,
         clienteId: idCliente,
       });
 
-      // Campos inmutables en edición según reglas de negocio en Java
       this.form.get('clienteId')?.disable();
       this.form.get('saldoInicial')?.disable();
     }
   }
 
   cargarClientes() {
-    // Cargamos los primeros clientes para el select,
-    // podrías implementar un buscador más avanzado luego
     this.clienteRepo.getAll('', 0, 50).subscribe({
       next: (res) => this.clientesList.set(res.data.content),
       error: () => this.notify.show('Error al cargar clientes', 'error'),
@@ -92,7 +86,6 @@ export class CuentaForm implements OnInit {
       },
       error: (err) => {
         this.loading.set(false);
-        // Captura de errores manuales (ValidationException) de tu Java
         const errorMsg = err.error?.message;
         if (typeof errorMsg === 'object') {
           const firstError = Object.values(errorMsg)[0] as string;

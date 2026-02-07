@@ -27,11 +27,12 @@ public class GetReporteService implements GetReporteUseCase {
     private final ClientePersistencePort clientePersistencePort;
 
     @Override
-    public ReporteEstadoCuentaDTO generarReporte(Long idPersona, LocalDateTime inicio, LocalDateTime fin) {
-        Cliente cliente = clientePersistencePort.findById(idPersona)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente no existe."));
+    public ReporteEstadoCuentaDTO generarReporte(String clienteIdStr, LocalDateTime inicio, LocalDateTime fin) {
+        Cliente cliente = clientePersistencePort.findByClienteId(clienteIdStr)
+            .orElseThrow(() -> new IllegalArgumentException("El ID de cliente " + clienteIdStr + " no existe."));
 
-        List<Movimiento> movs = movimientoPersistencePort.findByClienteAndFechaRange(idPersona, inicio, fin);
+    // IMPORTANTE: Para los movimientos usamos cliente.getId() que es la FK de la DB
+    List<Movimiento> movs = movimientoPersistencePort.findByClienteAndFechaRange(cliente.getId(), inicio, fin);
 
         BigDecimal totalCreditos = movs.stream()
                 .map(Movimiento::getValor)
@@ -44,7 +45,6 @@ public class GetReporteService implements GetReporteUseCase {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         String pdfBase64 = generarPdfBase64(movs, cliente.getNombre(), inicio, fin);
-
         return ReporteEstadoCuentaDTO.builder()
                 .cliente(cliente.getNombre())
                 .rangoFechas(inicio.toLocalDate() + " a " + fin.toLocalDate())

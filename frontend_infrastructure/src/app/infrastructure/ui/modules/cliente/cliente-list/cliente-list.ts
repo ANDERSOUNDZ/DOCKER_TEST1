@@ -21,12 +21,11 @@ export class ClienteList implements OnInit {
   selectedCliente = signal<any | null>(null);
   lastAffectedId = signal<number | null>(null);
 
-  // Lógica de ordenamiento automática: Activos arriba, Inactivos abajo
   sortedClientes = computed(() => {
     const clientes = [...this.state.clientes()];
     return clientes.sort((a, b) => {
       if (a.estado !== b.estado) return a.estado ? -1 : 1;
-      return b.id - a.id; // Dentro del mismo estado, los más nuevos primero
+      return b.id - a.id;
     });
   });
 

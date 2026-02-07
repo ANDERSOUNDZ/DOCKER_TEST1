@@ -1,11 +1,9 @@
-/* Contenedor Principal */
 .module-view {
   position: relative;
   min-height: 400px;
   animation: fadeIn 0.4s ease-out;
 }
 
-/* Cabecera y Acciones Superiores */
 .module-header {
   display: flex;
   justify-content: space-between;
@@ -43,9 +41,8 @@
   }
 }
 
-/* Botón Principal */
 .btn-primary {
-  flex-shrink: 0; // Evita que se encoja o solape
+  flex-shrink: 0;
   background-color: #f1c40f;
   color: #000;
   border: none;
@@ -62,7 +59,6 @@
   }
 }
 
-/* Tabla de Datos */
 .table-container {
   background: white;
   border-radius: 8px;
@@ -92,7 +88,6 @@
       vertical-align: middle;
     }
 
-    /* Estilo para la celda de información (Nombre y Documento) */
     .info-cell {
       display: flex;
       flex-direction: column;
@@ -117,27 +112,24 @@
   }
 }
 
-/* Badges */
 .badge {
   padding: 4px 10px;
   border-radius: 20px;
   font-size: 0.75rem;
   font-weight: 600;
   background-color: #fdf2f2;
-  color: #c0392b; // Estilo para Retiro
+  color: #c0392b;
 
   &.active {
     background-color: #eafaf1;
-    color: #2e7d32; // Estilo para Depósito
+    color: #2e7d32;
   }
 }
 
-/* Colores de Montos */
 .text-danger { color: #d32f2f !important; }
 .text-success { color: #2e7d32 !important; }
 .fw-bold { font-weight: 700; }
 
-/* Paginación (Sincronizada con Cuentas) */
 .pagination-controls {
   display: flex;
   justify-content: space-between;
@@ -181,7 +173,6 @@
   }
 }
 
-/* Loading y Animaciones */
 .loading-overlay {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;

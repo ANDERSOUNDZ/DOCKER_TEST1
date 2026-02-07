@@ -15,7 +15,7 @@ export class CuentaService implements CuentaRepository {
     let params = new HttpParams().set('page', page).set('size', size);
 
     if (search) {
-      params = params.set('search', search); // Enviamos el término al backend
+      params = params.set('search', search);
     }
 
     return this.http.get<any>(this.endpoint, { params }).pipe(map((res) => res.data));

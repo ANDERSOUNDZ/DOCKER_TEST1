@@ -64,7 +64,7 @@ public class MovimientosController {
 
     @GetMapping("/reporte")
     public ResponseEntity<BaseResponse<ReporteEstadoCuentaDTO>> generarReporte(
-            @RequestParam Long clienteId,
+            @RequestParam String clienteId, // Cambiado a String
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fin) {
 

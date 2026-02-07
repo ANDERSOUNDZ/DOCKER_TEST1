@@ -10,7 +10,6 @@ export interface Cliente {
   estado: boolean;
 }
 
-// Para manejar la paginación de Spring Data
 export interface Page<T> {
   content: T[];
   totalElements: number;
@@ -19,7 +18,6 @@ export interface Page<T> {
   number: number;
 }
 
-// Para manejar tu BaseResponse<T> del backend
 export interface BaseResponse<T> {
   message: string;
   data: T;
