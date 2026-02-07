@@ -35,7 +35,7 @@ public class Movimiento {
 
     private BigDecimal saldoAnterior;
 
-    private BigDecimal saldo; 
+    private BigDecimal saldo;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cuenta_id", nullable = false)

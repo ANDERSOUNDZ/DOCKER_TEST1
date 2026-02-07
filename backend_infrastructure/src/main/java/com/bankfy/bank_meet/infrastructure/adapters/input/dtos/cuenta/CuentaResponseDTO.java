@@ -6,6 +6,7 @@ import com.bankfy.bank_meet.domain.models.cuenta.Cuenta;
 
 public record CuentaResponseDTO(
         Long id,
+        Long clienteId,
         String numeroCuenta,
         String tipoCuenta,
         BigDecimal saldoActual,
@@ -15,6 +16,7 @@ public record CuentaResponseDTO(
     public static CuentaResponseDTO fromEntity(Cuenta c) {
         return new CuentaResponseDTO(
                 c.getId(),
+                c.getCliente() != null ? c.getCliente().getId() : null,
                 c.getNumeroCuenta(),
                 c.getTipoCuenta(),
                 c.getSaldoInicial(),

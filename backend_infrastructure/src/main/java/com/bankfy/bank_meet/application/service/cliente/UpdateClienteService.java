@@ -47,7 +47,14 @@ public class UpdateClienteService implements UpdateClienteUseCase {
                     case "nombre", "identificacion", "clienteId" ->
                         errores.put(key, "Este campo es inmutable y no puede ser actualizado.");
 
-                    case "genero" -> cliente.setGenero((String) value);
+                    case "genero" -> {
+                        String gen = (String) value;
+                        if (gen != null && (gen.equals("Masculino") || gen.equals("Femenino"))) {
+                            cliente.setGenero(gen);
+                        } else {
+                            errores.put("genero", "Solo se permite 'Masculino' o 'Femenino'.");
+                        }
+                    }
                     case "direccion" -> cliente.setDireccion((String) value);
                     case "telefono" -> cliente.setTelefono((String) value);
                     case "estado" -> cliente.setEstado((Boolean) value);
@@ -60,10 +67,12 @@ public class UpdateClienteService implements UpdateClienteUseCase {
                     }
                     case "contrasena" -> {
                         String pass = (String) value;
-                        if (pass.length() < 4)
-                            errores.put("contrasena", "Mínimo 4 caracteres.");
-                        else
-                            cliente.setContrasena(passwordEncoder.encode(pass));
+                        if (pass != null && !pass.isBlank()) {
+                            if (pass.length() < 4)
+                                errores.put("contrasena", "Mínimo 4 caracteres.");
+                            else
+                                cliente.setContrasena(passwordEncoder.encode(pass));
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -83,8 +92,10 @@ public class UpdateClienteService implements UpdateClienteUseCase {
         target.setEdad(source.getEdad());
         target.setDireccion(source.getDireccion());
         target.setTelefono(source.getTelefono());
-        target.setEstado(source.getEstado());
 
+        if (source.getEstado() != null) {
+            target.setEstado(source.getEstado());
+        }
         Optional.ofNullable(source.getContrasena())
                 .filter(pass -> !pass.isBlank())
                 .ifPresent(pass -> target.setContrasena(passwordEncoder.encode(pass)));

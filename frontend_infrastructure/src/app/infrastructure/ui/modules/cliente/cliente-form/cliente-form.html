@@ -1,0 +1,109 @@
+<div class="modal-backdrop">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>{{ clienteData() ? 'Editar Cliente' : 'Registrar Nuevo Cliente' }}</h3>
+      <button class="close-btn" (click)="close.emit()">×</button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nombre Completo</label>
+          <input
+            formControlName="nombre"
+            placeholder="Ej: Juan Pérez"
+            (keypress)="onlyLetters($event)"
+          />
+          @if (form.get('nombre')?.invalid && form.get('nombre')?.touched) {
+            <span class="error-msg">
+              {{ getErrorMessage('nombre', 'El nombre es obligatorio') }}
+            </span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label>Identificación</label>
+          <input formControlName="identificacion" placeholder="Cédula o RUC" />
+          @if (form.get('identificacion')?.invalid && form.get('identificacion')?.touched) {
+            <span class="error-msg">
+              {{ getErrorMessage('identificacion', 'Inválida (10-13 caracteres)') }}
+            </span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label>Género</label>
+          <select formControlName="genero">
+            <option value="">Seleccione...</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Femenino">Femenino</option>
+          </select>
+          @if (form.get('genero')?.invalid && form.get('genero')?.touched) {
+            <span class="error-msg">
+              {{ getErrorMessage('genero', 'Seleccione un género') }}
+            </span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label>Edad</label>
+          <input type="number" formControlName="edad" />
+          @if (form.get('edad')?.invalid && form.get('edad')?.touched) {
+            <span class="error-msg">
+              {{ getErrorMessage('edad', 'Debe ser mayor de 18 años') }}
+            </span>
+          }
+        </div>
+
+        <div class="form-group full-width">
+          <label>Dirección</label>
+          <input formControlName="direccion" />
+          @if (form.get('direccion')?.invalid && form.get('direccion')?.touched) {
+            <span class="error-msg">
+              {{ getErrorMessage('direccion', 'La dirección es requerida') }}
+            </span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label>Teléfono</label>
+          <input formControlName="telefono" />
+          @if (form.get('telefono')?.invalid && form.get('telefono')?.touched) {
+            <span class="error-msg">
+              {{ getErrorMessage('telefono', 'El teléfono es requerido') }}
+            </span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label style="display: flex; justify-content: space-between">
+            Contraseña
+            @if (clienteData()) {
+              <small
+                (click)="togglePasswordEdit()"
+                style="color: #ff0550; cursor: pointer; font-weight: bold"
+              >
+                {{ cambiarPass() ? 'Cancelar' : 'Cambiar' }}
+              </small>
+            }
+          </label>
+          <input
+            type="password"
+            formControlName="contrasena"
+            [placeholder]="clienteData() && !cambiarPass() ? '********' : 'Mínimo 4 caracteres'"
+          />
+          @if (form.get('contrasena')?.invalid && form.get('contrasena')?.touched) {
+            <span class="error-msg">
+              {{ getErrorMessage('contrasena', 'Mínimo 4 caracteres') }}
+            </span>
+          }
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" (click)="close.emit()">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="form.invalid">Guardar Cliente</button>
+      </div>
+    </form>
+  </div>
+</div>

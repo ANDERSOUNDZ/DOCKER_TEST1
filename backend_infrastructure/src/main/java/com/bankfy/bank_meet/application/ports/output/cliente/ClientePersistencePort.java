@@ -11,6 +11,7 @@ public interface ClientePersistencePort {
     Cliente save(Cliente cliente);
 
     Optional<Cliente> findById(Long id);
+    Optional<Cliente> findByClienteId(String clienteId);
 
     boolean existsById(Long id);
 
