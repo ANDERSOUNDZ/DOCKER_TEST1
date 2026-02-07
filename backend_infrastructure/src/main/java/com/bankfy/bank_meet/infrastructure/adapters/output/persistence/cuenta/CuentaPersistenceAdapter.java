@@ -47,6 +47,11 @@ public class CuentaPersistenceAdapter implements CuentaPersistencePort {
     }
 
     @Override
+    public Page<Cuenta> findBySearch(String search, Pageable pageable) {
+        return repository.findBySearch(search, pageable);
+    }
+
+    @Override
     public Page<Cuenta> findAll(Pageable pageable) {
         return repository.findAll(pageable);
     }

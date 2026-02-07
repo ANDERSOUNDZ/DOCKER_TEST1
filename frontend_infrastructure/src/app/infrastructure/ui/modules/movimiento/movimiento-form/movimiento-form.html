@@ -1,0 +1,57 @@
+<div class="form-card animate-fadeIn">
+  <div class="form-header">
+    <h3>Registrar Nueva Transacción</h3>
+    <button class="btn-close" (click)="close.emit()">×</button>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="save()" class="form-body">
+    <div class="form-grid">
+      
+      <div class="form-group">
+        <label>Número de Cuenta</label>
+        <input 
+          type="text" 
+          formControlName="numeroCuenta"
+          placeholder="Ej: 478758"
+          [class.error]="isInvalid('numeroCuenta')"
+        />
+        @if (isInvalid('numeroCuenta')) {
+          <span class="error-msg">Ingrese un número de cuenta válido</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label>Tipo de Movimiento</label>
+        <select formControlName="tipoMovimiento" [class.error]="isInvalid('tipoMovimiento')">
+          <option value="Deposito">Depósito</option>
+          <option value="Retiro">Retiro</option>
+        </select>
+        @if (isInvalid('tipoMovimiento')) {
+          <span class="error-msg">Seleccione el tipo</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label>Valor (USD)</label>
+        <input 
+          type="number" 
+          formControlName="valor"
+          placeholder="0.00"
+          [class.error]="isInvalid('valor')"
+        />
+        @if (isInvalid('valor')) {
+          <span class="error-msg">El valor debe ser mayor a 0</span>
+        }
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn-secondary" (click)="close.emit()">
+        Cancelar
+      </button>
+      <button type="submit" class="btn-primary" [disabled]="loading()">
+        {{ loading() ? 'Procesando...' : 'Confirmar Transacción' }}
+      </button>
+    </div>
+  </form>
+</div>

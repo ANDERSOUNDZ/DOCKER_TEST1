@@ -12,7 +12,7 @@ public interface GetCuentaUseCase {
 
     Cuenta getByNumeroCuenta(String numeroCuenta);
 
-    Page<Cuenta> getAll(Pageable pageable);
+    Page<Cuenta> getAll(Pageable pageable , String search);
 
     List<Cuenta> getByClienteId(Long clienteId);
 }

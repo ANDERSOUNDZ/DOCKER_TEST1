@@ -5,6 +5,8 @@ import org.springframework.stereotype.Repository;
 
 import com.bankfy.bank_meet.domain.models.cliente.Cliente;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -12,4 +14,6 @@ import org.springframework.data.domain.Pageable;
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
     Page<Cliente> findByNombreContainingIgnoreCaseOrIdentificacionContaining(
             String nombre, String identificacion, Pageable pageable);
+
+    Optional<Cliente> findByClienteId(String clienteId);
 }

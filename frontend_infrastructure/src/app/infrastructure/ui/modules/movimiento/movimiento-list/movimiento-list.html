@@ -1,0 +1,123 @@
+<div class="module-view">
+  @if (state.isLoading()) {
+    <div class="loading-overlay">
+      <div class="spinner"></div>
+      <p>Cargando movimientos...</p>
+    </div>
+  }
+
+  <header class="module-header">
+    <h2 class="module-title">Historial de Movimientos</h2>
+
+    <div class="header-actions">
+      <div class="search-box">
+        <input
+          type="text"
+          inputmode="numeric"
+          pattern="[0-9]*"
+          placeholder="Buscar por número de cuenta..."
+          [value]="state.searchQuery()"
+          (input)="onSearch($event)"
+        />
+      </div>
+
+      @if (!showForm()) {
+        <button class="btn-primary" (click)="openCreate()">Nueva Transacción</button>
+      }
+    </div>
+  </header>
+
+  @if (showForm()) {
+    <app-movimiento-form (close)="showForm.set(false)" (saved)="loadMovimientos()">
+    </app-movimiento-form>
+  }
+
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Tipo Cuenta</th>
+          <th>N° Cuenta</th>
+          <th>Tipo Mov.</th>
+          <th>Saldo Inicial</th>
+          <th>Movimiento</th>
+          <th>Saldo Disponible</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (mov of sortedItems(); track $index) {
+          <tr>
+            <td>{{ mov.Fecha }}</td>
+            <td>{{ mov.Tipo }}</td>
+            <td>
+              <strong>{{ mov['Numero Cuenta'] }}</strong>
+            </td>
+            <td>
+              <span class="badge" [class.active]="mov.Movimiento > 0">
+                {{ mov.Movimiento > 0 ? 'Depósito' : 'Retiro' }}
+              </span>
+            </td>
+            <td>{{ mov['Saldo Inicial'] | currency: 'USD' }}</td>
+            <td>
+              <span
+                [class.text-danger]="mov.Movimiento < 0"
+                [class.text-success]="mov.Movimiento > 0"
+                class="fw-bold"
+              >
+                {{ mov.Movimiento | currency: 'USD' }}
+              </span>
+            </td>
+            <td>
+              <strong>{{ mov['Saldo Disponible'] | currency: 'USD' }}</strong>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="7" class="empty-row">No se encontraron movimientos.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <div class="pagination-controls">
+      <div class="pagination-info">
+        Mostrando
+        {{ state.paginationMovimientos().currentPage * state.paginationMovimientos().pageSize + 1 }}
+        a
+        {{
+          (state.paginationMovimientos().currentPage + 1) * state.paginationMovimientos().pageSize
+        }}
+        de {{ state.paginationMovimientos().totalElements }} movimientos
+      </div>
+
+      <div class="pagination-buttons">
+        <button
+          [disabled]="state.paginationMovimientos().currentPage === 0"
+          (click)="goToPage(state.paginationMovimientos().currentPage - 1)"
+        >
+          Anterior
+        </button>
+
+        @for (p of [].constructor(state.paginationMovimientos().totalPages); track $index) {
+          <button
+            [class.active]="$index === state.paginationMovimientos().currentPage"
+            (click)="goToPage($index)"
+          >
+            {{ $index + 1 }}
+          </button>
+        }
+
+        <button
+          [disabled]="
+            state.paginationMovimientos().currentPage ===
+            state.paginationMovimientos().totalPages - 1
+          "
+          (click)="goToPage(state.paginationMovimientos().currentPage + 1)"
+        >
+          Siguiente
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

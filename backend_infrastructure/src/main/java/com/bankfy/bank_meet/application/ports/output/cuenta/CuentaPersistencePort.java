@@ -13,6 +13,7 @@ public interface CuentaPersistencePort {
     Optional<Cuenta> findById(Long id);
 
     Optional<Cuenta> findByNumeroCuenta(String numeroCuenta);
+    
 
     boolean existsByNumeroCuenta(String numeroCuenta);
 
@@ -20,6 +21,7 @@ public interface CuentaPersistencePort {
 
     long countByClienteIdAndTipoCuenta(Long clienteId, String tipoCuenta);
 
+    Page<Cuenta> findBySearch(String search, Pageable pageable);
     Page<Cuenta> findAll(Pageable pageable);
 
     void deleteById(Long id);

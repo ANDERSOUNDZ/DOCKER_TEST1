@@ -11,6 +11,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/movimientos")
@@ -46,23 +48,23 @@ public class MovimientosController {
     }
 
     @GetMapping
-    public ResponseEntity<BaseResponse<List<MovimientoResponseDTO>>> listar(
+    public ResponseEntity<BaseResponse<Page<MovimientoResponseDTO>>> listar(
             @RequestParam(required = false) Long cliente,
             @RequestParam(required = false) String fechaInicio,
-            @RequestParam(required = false) String fechaFin) {
+            @RequestParam(required = false) String fechaFin,
+            @RequestParam(required = false) String search,
+            @PageableDefault(size = 10) Pageable pageable) {
 
-        List<Movimiento> entidades = getUseCase.obtenerPorFiltros(cliente, fechaInicio, fechaFin);
-
-        List<MovimientoResponseDTO> dtos = entidades.stream()
-                .map(MovimientoResponseDTO::fromEntity)
-                .toList();
+        Page<MovimientoResponseDTO> dtos = getUseCase
+                .obtenerPorFiltros(cliente, fechaInicio, fechaFin, search, pageable)
+                .map(MovimientoResponseDTO::fromEntity);
 
         return buildResponse("Consulta de movimientos exitosa", dtos, HttpStatus.OK);
     }
 
     @GetMapping("/reporte")
     public ResponseEntity<BaseResponse<ReporteEstadoCuentaDTO>> generarReporte(
-            @RequestParam Long clienteId,
+            @RequestParam String clienteId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fin) {
 

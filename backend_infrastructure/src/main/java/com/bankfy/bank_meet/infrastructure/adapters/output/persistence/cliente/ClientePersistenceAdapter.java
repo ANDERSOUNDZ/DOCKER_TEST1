@@ -48,4 +48,9 @@ public class ClientePersistenceAdapter implements ClientePersistencePort {
     public Optional<Cliente> findByIdentificacion(String identificacion) {
         return Optional.empty();
     }
+
+    @Override
+    public Optional<Cliente> findByClienteId(String clienteId) {
+        return repository.findByClienteId(clienteId);
+    }
 }

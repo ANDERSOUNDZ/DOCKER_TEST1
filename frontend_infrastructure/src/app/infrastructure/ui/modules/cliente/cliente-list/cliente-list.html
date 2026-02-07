@@ -1,0 +1,112 @@
+<div class="module-view">
+  @if (state.isLoading()) {
+    <div class="loading-overlay">
+      <div class="spinner"></div>
+      <p>Cargando información...</p>
+    </div>
+  }
+
+  <header class="module-header">
+    <h2 class="module-title">Clientes</h2>
+    <div class="header-actions">
+      <div class="search-box">
+        <input
+          type="text"
+          placeholder="Buscar por nombre o identificación..."
+          [value]="state.searchQuery()"
+          (input)="onSearch($event)"
+        />
+      </div>
+      <button class="btn-primary" (click)="openCreate()">Nuevo Cliente</button>
+      @if (showForm) {
+        <app-cliente-form
+          [clienteData]="selectedCliente()"
+          (close)="showForm = false"
+          (saved)="onClienteSaved()"
+        ></app-cliente-form>
+      }
+    </div>
+  </header>
+
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>CI / Passaporte</th>
+          <th>Nombre</th>  
+          <th>Identificador Bancario</th>                  
+          <th>Teléfono</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of sortedClientes(); track item.id) {
+          <tr [class.recent-change]="item.id === lastAffectedId()">
+            <td>{{ item.identificacion }}</td>
+            <td>
+              <strong>{{ item.nombre }}</strong>
+            </td>
+            <td>{{ item.clienteId }}</td>
+            <td>{{ item.telefono }}</td>
+            <td>
+              <span class="badge" [class.active]="item.estado">
+                {{ item.estado ? 'Activo' : 'Inactivo' }}
+              </span>
+            </td>
+            <td>
+              <div class="action-buttons-text">
+                <button class="btn-text edit" (click)="openEdit(item)">Editar</button>
+                <button
+                  class="btn-text"
+                  [class.delete]="item.estado"
+                  [class.activate]="!item.estado"
+                  (click)="toggleEstado(item)"
+                >
+                  {{ item.estado ? 'Desactivar' : 'Activar' }}
+                </button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" class="empty-row">No se encontraron clientes.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <div class="pagination-controls">
+      <div class="pagination-info">
+        Mostrando
+        {{ state.paginationClientes().currentPage * state.paginationClientes().pageSize + 1 }} a
+        {{ (state.paginationClientes().currentPage + 1) * state.paginationClientes().pageSize }} de
+        {{ state.paginationClientes().totalElements }} clientes
+      </div>
+      <div class="pagination-buttons">
+        <button
+          [disabled]="state.paginationClientes().currentPage === 0"
+          (click)="goToPage(state.paginationClientes().currentPage - 1)"
+        >
+          Anterior
+        </button>
+        @for (p of [].constructor(state.paginationClientes().totalPages); track $index) {
+          <button
+            [class.active]="$index === state.paginationClientes().currentPage"
+            (click)="goToPage($index)"
+          >
+            {{ $index + 1 }}
+          </button>
+        }
+        <button
+          [disabled]="
+            state.paginationClientes().currentPage === state.paginationClientes().totalPages - 1
+          "
+          (click)="goToPage(state.paginationClientes().currentPage + 1)"
+        >
+          Siguiente
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
