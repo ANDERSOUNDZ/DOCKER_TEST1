@@ -80,7 +80,10 @@ Save Password: (Marcado)
 -------
 BANKFY TEST 1
 -------
-
+----
+Manejo de ramas
+----
+![1A](./assets/img/15A.png)
 
 
 Funcionalidades Front End:
@@ -100,6 +103,14 @@ Funcionalidades Front End:
 5. Generar reporte (Estado de cuenta) especificando un rango de fechas y un cliente, visualice las cuentas asociadas con sus respectivos saldos y el total de débitos y créditos realizados durante las fechas de ese cliente. Tomar en consideración que también se debe obtener los resultados del reporte en formato base64 (PDF) y Json. Por ejemplo: (/reportes?fecha rango fechas)
 ![5A](./assets/img/11A.png)
 ![5A](./assets/img/5A.png)
+
+----
+Test Springboot
+----
+
+![5A](./assets/img/16A.png) ![5A](./assets/img/16b.png)
+
+----
 
 Funcionalidades Backend
 
