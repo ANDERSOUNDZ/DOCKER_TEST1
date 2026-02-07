@@ -27,7 +27,9 @@ git clone https://github.com/ANDERSOUNDZ/DOCKER_TEST1.git
 cd DOCKER_TEST1
 
 Levantar los Servicios
+---
 Ejecuta el comando completo para construir las imágenes y levantar los contenedores en segundo plano:
+---
 docker-compose up --build
 
 Servicios Desplegados
@@ -41,8 +43,15 @@ Una vez que Docker termine el proceso, podrás acceder a los siguientes servicio
 | pgAdmin       | http://localhost:5050/                            | 5050   | Panel de Gestión de BD            |
 | Database      | localhost 5432                                    | 5432   | Motor PostgreSQL                  |
 
-Configuración de pgAdmin (Visualizar BD)
+---
 
+---
+Configuración de pgAdmin (Visualizar BD)
+---
+
+![14](./assets/img/14A.png)
+
+---
 Para ver las tablas y datos en la interfaz visual, sigue estos pasos dentro de pgAdmin:
 
 Inicia sesión con el correo y clave configurados en el compose
@@ -69,7 +78,7 @@ Password: BankMeet2024!
 Save Password: (Marcado)
 
 -------
-BANKY TEST 1
+BANKFY TEST 1
 -------
 
 
