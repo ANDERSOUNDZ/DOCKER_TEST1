@@ -44,7 +44,13 @@ export class MovimientoForm {
       },
       error: (err) => {
         this.loading.set(false);
-        this.notify.show(err.error?.message || 'Error al procesar', 'error');
+        const errorResponse = err.error?.message;
+        if (errorResponse && typeof errorResponse === 'object') {
+          const firstError = Object.values(errorResponse)[0] as string;
+          this.notify.show(firstError, 'error');
+        } else {
+          this.notify.show(errorResponse || 'Error al procesar la transacción', 'error');
+        }
       },
     });
   }

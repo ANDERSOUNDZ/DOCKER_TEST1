@@ -32,9 +32,9 @@
     <table class="data-table">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Identificación</th>
+          <th>CI / Passaporte</th>
+          <th>Nombre</th>  
+          <th>Identificador Bancario</th>                  
           <th>Teléfono</th>
           <th>Estado</th>
           <th>Acciones</th>
@@ -43,11 +43,11 @@
       <tbody>
         @for (item of sortedClientes(); track item.id) {
           <tr [class.recent-change]="item.id === lastAffectedId()">
-            <td>{{ item.clienteId }}</td>
+            <td>{{ item.identificacion }}</td>
             <td>
               <strong>{{ item.nombre }}</strong>
             </td>
-            <td>{{ item.identificacion }}</td>
+            <td>{{ item.clienteId }}</td>
             <td>{{ item.telefono }}</td>
             <td>
               <span class="badge" [class.active]="item.estado">
