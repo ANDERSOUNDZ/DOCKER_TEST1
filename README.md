@@ -72,7 +72,7 @@ Save Password: (Marcado)
 Funcionalidades:
 
 1. Los valores cuando son crédito son positivos, y los débitos son negativos. Debe almacenarse el saldo disponible en cada transacción dependiendo del tipo de movimiento. (suma o resta)
-C:\Users\ander\OneDrive\Escritorio\DOCKER_TEST1\assets\img\1A.png
+![Descripción de la imagen](./assets/img/1A.png)
 C:\Users\ander\OneDrive\Escritorio\DOCKER_TEST1\assets\img\1B.png
 2. Si el saldo es cero, y va a realizar una transacción débito, debe desplegar mensaje "Saldo no disponible".
 C:\Users\ander\OneDrive\Escritorio\DOCKER_TEST1\assets\img\2A.png
