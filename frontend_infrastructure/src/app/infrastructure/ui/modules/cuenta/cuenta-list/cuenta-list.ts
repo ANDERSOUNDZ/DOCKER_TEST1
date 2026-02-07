@@ -21,25 +21,12 @@ export class CuentaList implements OnInit {
   showForm = false;
   selectedCuenta = signal<any | null>(null);
 
-  // Señal local para el buscador de cuentas si no está en el AppState
-  searchQuery = signal<string>('');
-
-  // LÓGICA DE FILTRADO Y ORDENAMIENTO (Frontend)
+  // LÓGICA DE ORDENAMIENTO ÚNICAMENTE
   sortedItems = computed(() => {
-    // 1. Obtenemos los items del estado
-    let items = [...this.state.items()];
-    const query = this.searchQuery().toLowerCase();
+    // Tomamos las cuentas del estado (ya filtradas por el servidor)
+    const items = [...this.state.cuentas()];
 
-    // 2. Filtramos localmente por nombre de cliente o número de cuenta
-    if (query) {
-      items = items.filter(
-        (item) =>
-          item.numeroCuenta.toLowerCase().includes(query) ||
-          item.nombreCliente?.toLowerCase().includes(query),
-      );
-    }
-
-    // 3. Ordenamos: Activas primero, luego por ID descendente
+    // Solo ordenamos por estado y ID
     return items.sort((a, b) => {
       if (a.estado !== b.estado) return a.estado ? -1 : 1;
       return b.id - a.id;
@@ -50,15 +37,28 @@ export class CuentaList implements OnInit {
     this.loadCuentas();
   }
 
-  loadCuentas(page: number = this.state.paginationCuentas().currentPage): void {
+  /**
+   * Carga las cuentas desde el servidor aplicando búsqueda y paginación
+   */
+  loadCuentas(
+    search: string = this.state.searchQuery(),
+    page: number = this.state.paginationCuentas().currentPage,
+  ): void {
     this.state.setLoading(true);
+
+    // Si el texto de búsqueda cambió, forzamos el regreso a la página 0
+    if (search !== this.state.searchQuery()) {
+      page = 0;
+    }
+
+    this.state.setSearchQuery(search);
     this.state.setPageCuentas(page);
 
-    this.cuentaRepo.getAll(page, this.state.paginationCuentas().pageSize).subscribe({
+    // Enviamos 'search' al repositorio para búsqueda global en DB
+    this.cuentaRepo.getAll(page, this.state.paginationCuentas().pageSize, search).subscribe({
       next: (res: any) => {
-        // Asumimos que res.data contiene la información de paginación
         const content = res?.data?.content || res?.content || [];
-        this.state.setItems(content);
+        this.state.setCuentas(content);
 
         this.state.setPaginationCuentas({
           currentPage: res?.data?.number ?? res?.number ?? 0,
@@ -74,13 +74,13 @@ export class CuentaList implements OnInit {
 
   onSearch(event: Event): void {
     const element = event.target as HTMLInputElement;
-    this.searchQuery.set(element.value);
+    // Llamamos a la carga del servidor con el nuevo término
+    this.loadCuentas(element.value, 0);
   }
 
-  // Resto de métodos de UI
   goToPage(page: number): void {
     if (page >= 0 && page < this.state.paginationCuentas().totalPages) {
-      this.loadCuentas(page);
+      this.loadCuentas(this.state.searchQuery(), page);
     }
   }
 

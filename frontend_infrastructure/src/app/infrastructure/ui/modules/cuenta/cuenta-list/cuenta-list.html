@@ -13,8 +13,8 @@
         <input
           type="text"
           placeholder="Buscar por número de cuenta o nombre de cliente..."
-          [value]="searchQuery()"
-          (input)="onSearch($event)"
+          [value]="state.searchQuery()"
+          (input)="$event.stopPropagation(); onSearch($event)"
         />
       </div>
 

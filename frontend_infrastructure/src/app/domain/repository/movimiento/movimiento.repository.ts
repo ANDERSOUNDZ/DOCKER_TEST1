@@ -3,11 +3,12 @@ import { Movimiento } from '../../models/movimiento/movimiento';
 
 export abstract class MovimientoRepository {
   abstract getByFilters(
-    clienteId: number | null, // Permitir null para búsqueda general
+    clienteId: number | null,
     fechaInicio?: string,
     fechaFin?: string,
-    page?: number, // <--- AGREGAR ESTO (4to argumento)
-  ): Observable<any>; // Cambiamos a any porque ahora devuelve un objeto con paginación (content, totalPages, etc)
+    page?: number,
+    search?: string, // <--- Agregar esto como 5to parámetro
+  ): Observable<any>;// Cambiamos a any porque ahora devuelve un objeto con paginación (content, totalPages, etc)
 
   abstract create(movimiento: any): Observable<Movimiento>;
 

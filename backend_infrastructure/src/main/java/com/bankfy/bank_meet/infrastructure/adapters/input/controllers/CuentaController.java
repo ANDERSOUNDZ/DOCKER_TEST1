@@ -40,9 +40,10 @@ public class CuentaController {
 
     @GetMapping
     public ResponseEntity<BaseResponse<Page<CuentaResponseDTO>>> listarTodas(
-            @PageableDefault(size = 10) Pageable pageable) {
+            @PageableDefault(size = 10) Pageable pageable,
+            @RequestParam(required = false) String search) { // Añadir RequestParam
 
-        Page<CuentaResponseDTO> data = getUseCase.getAll(pageable)
+        Page<CuentaResponseDTO> data = getUseCase.getAll(pageable, search)
                 .map(CuentaResponseDTO::fromEntity);
 
         return buildResponse("Lista de cuentas recuperada", data, HttpStatus.OK);

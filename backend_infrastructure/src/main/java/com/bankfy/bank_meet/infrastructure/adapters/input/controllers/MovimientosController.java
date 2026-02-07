@@ -52,9 +52,11 @@ public class MovimientosController {
             @RequestParam(required = false) Long cliente,
             @RequestParam(required = false) String fechaInicio,
             @RequestParam(required = false) String fechaFin,
+            @RequestParam(required = false) String search, // <-- NUEVO
             @PageableDefault(size = 10) Pageable pageable) {
 
-        Page<MovimientoResponseDTO> dtos = getUseCase.obtenerPorFiltros(cliente, fechaInicio, fechaFin, pageable)
+        Page<MovimientoResponseDTO> dtos = getUseCase
+                .obtenerPorFiltros(cliente, fechaInicio, fechaFin, search, pageable)
                 .map(MovimientoResponseDTO::fromEntity);
 
         return buildResponse("Consulta de movimientos exitosa", dtos, HttpStatus.OK);

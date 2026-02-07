@@ -11,11 +11,14 @@ export class CuentaService implements CuentaRepository {
   private apiUrl = inject(API_URL);
   private endpoint = `${this.apiUrl}/cuentas`;
 
-  getAll(page: number, size: number): Observable<any> {
-    const params = new HttpParams().set('page', page).set('size', size);
-    return this.http.get<any>(this.endpoint, { params }).pipe(
-      map((res) => res.data),
-    );
+  getAll(page: number, size: number, search?: string): Observable<any> {
+    let params = new HttpParams().set('page', page).set('size', size);
+
+    if (search) {
+      params = params.set('search', search); // Enviamos el término al backend
+    }
+
+    return this.http.get<any>(this.endpoint, { params }).pipe(map((res) => res.data));
   }
 
   getById(id: number): Observable<Cuenta> {

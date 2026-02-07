@@ -20,37 +20,32 @@ export class MovimientoList implements OnInit {
   showForm = signal(false);
   searchQuery = signal<string>('');
 
-  // ORDEN INVERSO (Último registro primero)
+  // Ahora solo se encarga de mostrar lo que hay en el estado
   sortedItems = computed(() => {
-    const items = [...this.state.items()];
-    const query = this.searchQuery().trim().toLowerCase();
-
-    const filtered = query
-      ? items.filter((m) => m['Numero Cuenta']?.toLowerCase().includes(query))
-      : items;
-
-    return filtered.reverse(); // Muestra el último movimiento arriba
+    return [...this.state.items()]; // El backend ya devuelve la lista filtrada
   });
 
   ngOnInit(): void {
     this.loadMovimientos();
   }
 
+  // Modificado para aceptar el término de búsqueda
   loadMovimientos(page: number = 0) {
     this.state.setLoading(true);
     this.state.setPageMovimientos(page);
+    
+    const currentSearch = this.searchQuery();
 
-    this.movRepo.getByFilters(null, '', '', page).subscribe({
+    this.movRepo.getByFilters(null, '', '', page, currentSearch).subscribe({
       next: (res: any) => {
-        const content = res?.data?.content || res?.content || [];
+        const content = res?.content || [];
         this.state.setItems(content);
 
-        const p = res.data || res;
         this.state.setPaginationMovimientos({
-          currentPage: p.number ?? page,
-          pageSize: p.size ?? 10,
-          totalElements: p.totalElements ?? content.length,
-          totalPages: p.totalPages ?? 1,
+          currentPage: res.number ?? page,
+          pageSize: res.size ?? 10,
+          totalElements: res.totalElements ?? content.length,
+          totalPages: res.totalPages ?? 1,
         });
         this.state.setLoading(false);
       },
@@ -64,6 +59,9 @@ export class MovimientoList implements OnInit {
   onSearch(event: Event): void {
     const element = event.target as HTMLInputElement;
     this.searchQuery.set(element.value);
+    
+    // Al buscar, siempre volvemos a la página 0
+    this.loadMovimientos(0);
   }
 
   goToPage(page: number): void {

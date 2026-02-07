@@ -45,7 +45,8 @@ public class GetMovimientoService implements GetMovimientoUseCase {
     }
 
     @Override
-    public Page<Movimiento> obtenerPorFiltros(Long clienteId, String fechaInicio, String fechaFin, Pageable pageable) {
+    public Page<Movimiento> obtenerPorFiltros(Long clienteId, String fechaInicio, String fechaFin, String search,
+            Pageable pageable) {
         LocalDateTime inicio = (fechaInicio != null && !fechaInicio.isEmpty())
                 ? LocalDate.parse(fechaInicio).atStartOfDay()
                 : LocalDateTime.now().minusDays(30).with(LocalTime.MIN);
@@ -54,9 +55,9 @@ public class GetMovimientoService implements GetMovimientoUseCase {
                 ? LocalDate.parse(fechaFin).atTime(LocalTime.MAX)
                 : LocalDateTime.now().with(LocalTime.MAX);
 
+        // Si no hay cliente específico, usamos la búsqueda global mejorada
         if (clienteId == null) {
-            // CORRECCIÓN: Usar el puerto, no 'repository'
-            return movimientoPersistencePort.findAllByFechaRange(inicio, fin, pageable);
+            return movimientoPersistencePort.findAllWithSearch(inicio, fin, search, pageable);
         }
 
         return movimientoPersistencePort.findByClienteAndFechaRange(clienteId, inicio, fin, pageable);

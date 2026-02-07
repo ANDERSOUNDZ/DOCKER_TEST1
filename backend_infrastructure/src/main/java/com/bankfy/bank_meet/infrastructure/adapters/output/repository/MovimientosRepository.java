@@ -41,4 +41,15 @@ public interface MovimientosRepository extends JpaRepository<Movimiento, Long> {
         BigDecimal sumRetirosDelDia(@Param("clienteId") Long clienteId,
                         @Param("inicioDia") LocalDateTime inicioDia,
                         @Param("finDia") LocalDateTime finDia);
+
+        @Query("SELECT m FROM Movimiento m WHERE " +
+                        "(m.fecha BETWEEN :inicio AND :fin) AND " +
+                        "(:search IS NULL OR :search = '' OR " +
+                        "LOWER(m.cuenta.numeroCuenta) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+                        "LOWER(m.cuenta.cliente.nombre) LIKE LOWER(CONCAT('%', :search, '%')))")
+        Page<Movimiento> findAllWithSearch(
+                        @Param("inicio") LocalDateTime inicio,
+                        @Param("fin") LocalDateTime fin,
+                        @Param("search") String search,
+                        Pageable pageable);
 }

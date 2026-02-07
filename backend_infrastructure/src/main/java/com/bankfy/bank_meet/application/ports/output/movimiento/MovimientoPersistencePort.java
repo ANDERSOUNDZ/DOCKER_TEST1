@@ -23,4 +23,5 @@ public interface MovimientoPersistencePort {
             Pageable pageable);
 
     Page<Movimiento> findAllByFechaRange(LocalDateTime inicio, LocalDateTime fin, Pageable pageable);
+    Page<Movimiento> findAllWithSearch(LocalDateTime inicio, LocalDateTime fin, String search, Pageable pageable);
 }

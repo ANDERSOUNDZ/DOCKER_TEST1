@@ -32,7 +32,10 @@ public class GetCuentaService implements GetCuentaUseCase {
     }
 
     @Override
-    public Page<Cuenta> getAll(Pageable pageable) {
+    public Page<Cuenta> getAll(Pageable pageable, String search) {
+        if (search != null && !search.isEmpty()) {
+            return cuentaPersistencePort.findBySearch(search, pageable);
+        }
         return cuentaPersistencePort.findAll(pageable);
     }
 

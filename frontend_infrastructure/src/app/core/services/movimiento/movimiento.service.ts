@@ -42,15 +42,15 @@ export class MovimientoService implements MovimientoRepository {
     fechaInicio?: string,
     fechaFin?: string,
     page: number = 0,
+    search?: string, // <--- Recibir parámetro
   ): Observable<any> {
     let params = new HttpParams().set('page', page.toString()).set('size', '10');
 
     if (clienteId) params = params.set('cliente', clienteId.toString());
     if (fechaInicio) params = params.set('fechaInicio', fechaInicio);
     if (fechaFin) params = params.set('fechaFin', fechaFin);
+    if (search) params = params.set('search', search); // <--- Enviar al Backend
 
-    return this.http.get<any>(this.endpoint, { params }).pipe(
-      map((res) => res.data), // Extraemos .data que contiene el Page de Spring
-    );
+    return this.http.get<any>(this.endpoint, { params }).pipe(map((res) => res.data));
   }
 }

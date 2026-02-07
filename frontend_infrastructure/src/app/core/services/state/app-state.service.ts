@@ -7,9 +7,6 @@ export interface PaginationState {
   totalPages: number;
 }
 
-/**
- * Función auxiliar para generar un estado de paginación inicial limpio.
- */
 const initialPagination = (): PaginationState => ({
   currentPage: 0,
   pageSize: 10,
@@ -19,35 +16,50 @@ const initialPagination = (): PaginationState => ({
 
 @Injectable({ providedIn: 'root' })
 export class AppStateService {
-  // --- SEÑALES PRIVADAS ---
-  private _items = signal<any[]>([]);
+  // --- SEÑALES PRIVADAS SEPARADAS ---
+  private _clientes = signal<any[]>([]);
+  private _cuentas = signal<any[]>([]);
+  private _movimientos = signal<any[]>([]);
+
   private _loading = signal<boolean>(false);
   private _searchQuery = signal<string>('');
 
-  // Estados de paginación independientes para evitar persistencia cruzada
+  // Estados de paginación independientes
   private _paginationClientes = signal<PaginationState>(initialPagination());
   private _paginationCuentas = signal<PaginationState>(initialPagination());
   private _paginationMovimientos = signal<PaginationState>(initialPagination());
 
   // --- SEÑALES PÚBLICAS (Readonly) ---
-  public items = this._items.asReadonly();
-  public clientes = this._items.asReadonly();
+  // Mantenemos 'items' apuntando a clientes para no romper tu ClienteList y CuentaList actuales
+  public items = this._clientes.asReadonly();
+  public clientes = this._clientes.asReadonly();
+  public cuentas = this._cuentas.asReadonly();
+  public movimientos = this._movimientos.asReadonly();
+
   public isLoading = this._loading.asReadonly();
   public searchQuery = this._searchQuery.asReadonly();
-  public paginationMovimientos = this._paginationMovimientos.asReadonly();
 
-  // Exponemos las paginaciones por separado
   public paginationClientes = this._paginationClientes.asReadonly();
   public paginationCuentas = this._paginationCuentas.asReadonly();
+  public paginationMovimientos = this._paginationMovimientos.asReadonly();
 
-  // --- MÉTODOS DE ACTUALIZACIÓN GENÉRICOS ---
+  // --- MÉTODOS DE ACTUALIZACIÓN ---
 
+  // Este método lo siguen usando tus componentes actuales
   setItems(data: any[]) {
-    this._items.set(data);
+    this._clientes.set(data);
   }
 
   setClientes(data: any[]) {
-    this._items.set(data);
+    this._clientes.set(data);
+  }
+
+  setCuentas(data: any[]) {
+    this._cuentas.set(data);
+  }
+
+  setMovimientos(data: any[]) {
+    this._movimientos.set(data);
   }
 
   setLoading(value: boolean) {
@@ -58,11 +70,8 @@ export class AppStateService {
     this._searchQuery.set(query);
   }
 
-  // --- MÉTODOS DE PAGINACIÓN ESPECÍFICOS ---
+  // --- MÉTODOS DE PAGINACIÓN ---
 
-  /**
-   * Actualiza la paginación de Clientes
-   */
   setPaginationClientes(data: PaginationState) {
     this._paginationClientes.set(data);
   }
@@ -71,9 +80,6 @@ export class AppStateService {
     this._paginationClientes.update((prev) => ({ ...prev, currentPage: page }));
   }
 
-  /**
-   * Actualiza la paginación de Cuentas
-   */
   setPaginationCuentas(data: PaginationState) {
     this._paginationCuentas.set(data);
   }
@@ -82,9 +88,6 @@ export class AppStateService {
     this._paginationCuentas.update((prev) => ({ ...prev, currentPage: page }));
   }
 
-  /**
-   * Actualiza la paginación de Movimientos
-   */
   setPaginationMovimientos(data: PaginationState) {
     this._paginationMovimientos.set(data);
   }
@@ -93,11 +96,10 @@ export class AppStateService {
     this._paginationMovimientos.update((prev) => ({ ...prev, currentPage: page }));
   }
 
-  /**
-   * Limpia los items y resetea las búsquedas al cambiar de módulo si es necesario
-   */
   clearState() {
-    this._items.set([]);
+    this._clientes.set([]);
+    this._cuentas.set([]);
+    this._movimientos.set([]);
     this._searchQuery.set('');
     this._loading.set(false);
   }

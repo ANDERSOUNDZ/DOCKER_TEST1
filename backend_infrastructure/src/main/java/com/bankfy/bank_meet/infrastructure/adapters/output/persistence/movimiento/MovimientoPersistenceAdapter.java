@@ -51,4 +51,10 @@ public class MovimientoPersistenceAdapter implements MovimientoPersistencePort {
     public Page<Movimiento> findAllByFechaRange(LocalDateTime inicio, LocalDateTime fin, Pageable pageable) {
         return repository.findAllByFechaBetween(inicio, fin, pageable);
     }
+
+    @Override
+    public Page<Movimiento> findAllWithSearch(LocalDateTime inicio, LocalDateTime fin, String search,
+            Pageable pageable) {
+        return repository.findAllWithSearch(inicio, fin, search, pageable);
+    }
 }
