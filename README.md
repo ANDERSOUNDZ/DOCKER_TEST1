@@ -125,14 +125,19 @@ Funcionalidades Backend
 ![10B](./assets/img/10A.png)
 ![5B](./assets/img/5B.png)
 
+---
 EndPoints
+---
 
 Cliente
+---
 ![5B](./assets/img/12A.png)
 
 Cuenta
+---
 ![5B](./assets/img/12B.png)
 
 Movimiento
+---
 ![5B](./assets/img/12C.png)
 
