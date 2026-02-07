@@ -13,8 +13,10 @@
       <div class="search-box">
         <input
           type="text"
+          inputmode="numeric"
+          pattern="[0-9]*"
           placeholder="Buscar por número de cuenta..."
-          [value]="searchQuery()"
+          [value]="state.searchQuery()"
           (input)="onSearch($event)"
         />
       </div>
@@ -81,9 +83,12 @@
     <div class="pagination-controls">
       <div class="pagination-info">
         Mostrando
-        {{ state.paginationMovimientos().currentPage * state.paginationMovimientos().pageSize + 1 }} a
-        {{ (state.paginationMovimientos().currentPage + 1) * state.paginationMovimientos().pageSize }} de
-        {{ state.paginationMovimientos().totalElements }} movimientos
+        {{ state.paginationMovimientos().currentPage * state.paginationMovimientos().pageSize + 1 }}
+        a
+        {{
+          (state.paginationMovimientos().currentPage + 1) * state.paginationMovimientos().pageSize
+        }}
+        de {{ state.paginationMovimientos().totalElements }} movimientos
       </div>
 
       <div class="pagination-buttons">
@@ -105,7 +110,8 @@
 
         <button
           [disabled]="
-            state.paginationMovimientos().currentPage === state.paginationMovimientos().totalPages - 1
+            state.paginationMovimientos().currentPage ===
+            state.paginationMovimientos().totalPages - 1
           "
           (click)="goToPage(state.paginationMovimientos().currentPage + 1)"
         >

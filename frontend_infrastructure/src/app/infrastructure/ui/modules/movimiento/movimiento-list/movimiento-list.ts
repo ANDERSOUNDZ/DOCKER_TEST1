@@ -14,38 +14,53 @@ import { MovimientoForm } from '../movimiento-form/movimiento-form';
 })
 export class MovimientoList implements OnInit {
   private movRepo = inject(MovimientoRepository);
-  public state = inject(AppStateService);
+  public state = inject(AppStateService); // Usamos el estado global
   private notify = inject(Alert);
 
   showForm = signal(false);
-  searchQuery = signal<string>('');
 
-  // Ahora solo se encarga de mostrar lo que hay en el estado
+  // Ya no usamos un signal local para searchQuery, usamos state.searchQuery()
+
   sortedItems = computed(() => {
-    return [...this.state.items()]; // El backend ya devuelve la lista filtrada
+    // Tomamos los movimientos directamente del estado global
+    return [...this.state.movimientos()];
   });
 
   ngOnInit(): void {
-    this.loadMovimientos();
+    // Al iniciar, cargamos usando lo que ya esté en el estado (página y búsqueda)
+    this.loadMovimientos(this.state.searchQuery(), this.state.paginationMovimientos().currentPage);
   }
 
-  // Modificado para aceptar el término de búsqueda
-  loadMovimientos(page: number = 0) {
+  /**
+   * Carga con persistencia de estado
+   */
+  loadMovimientos(
+    search: string = this.state.searchQuery(),
+    page: number = this.state.paginationMovimientos().currentPage,
+  ) {
     this.state.setLoading(true);
+
+    // Si el término de búsqueda cambió, reseteamos a la página 0
+    if (search !== this.state.searchQuery()) {
+      page = 0;
+    }
+
+    // Guardamos en el estado global para que persista si navegamos a otra ruta
+    this.state.setSearchQuery(search);
     this.state.setPageMovimientos(page);
-    
-    const currentSearch = this.searchQuery();
 
-    this.movRepo.getByFilters(null, '', '', page, currentSearch).subscribe({
+    this.movRepo.getByFilters(null, '', '', page, search).subscribe({
       next: (res: any) => {
-        const content = res?.content || [];
-        this.state.setItems(content);
+        // Importante: Usar setMovimientos (el método específico de tu state)
+        const content = res?.data?.content || res?.content || [];
+        this.state.setMovimientos(content);
 
+        const p = res.data || res;
         this.state.setPaginationMovimientos({
-          currentPage: res.number ?? page,
-          pageSize: res.size ?? 10,
-          totalElements: res.totalElements ?? content.length,
-          totalPages: res.totalPages ?? 1,
+          currentPage: p.number ?? page,
+          pageSize: p.size ?? 10,
+          totalElements: p.totalElements ?? content.length,
+          totalPages: p.totalPages ?? 1,
         });
         this.state.setLoading(false);
       },
@@ -58,15 +73,22 @@ export class MovimientoList implements OnInit {
 
   onSearch(event: Event): void {
     const element = event.target as HTMLInputElement;
-    this.searchQuery.set(element.value);
-    
-    // Al buscar, siempre volvemos a la página 0
-    this.loadMovimientos(0);
+
+    // Expresión regular: busca todo lo que NO sea un dígito (\D) y lo reemplaza por vacío
+    const numericValue = element.value.replace(/\D/g, '');
+
+    // Actualizamos el valor visual del input por si el usuario pegó letras
+    element.value = numericValue;
+
+    // Si el valor numérico es diferente al que ya teníamos, disparamos la carga
+    if (numericValue !== this.state.searchQuery()) {
+      this.loadMovimientos(numericValue, 0);
+    }
   }
 
   goToPage(page: number): void {
     if (page >= 0 && page < this.state.paginationMovimientos().totalPages) {
-      this.loadMovimientos(page);
+      this.loadMovimientos(this.state.searchQuery(), page);
     }
   }
 
