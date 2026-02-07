@@ -1,4 +1,4 @@
-Bank Meet - Infraestructure Frontend / Backend
+# Bank Meet - Infraestructure Frontend / Backend
 
 ## Tecnologías Utilizadas
 
@@ -23,6 +23,7 @@ Sigue estos pasos para levantar el entorno de desarrollo:
 
 Abre una terminal y ejecuta:
 git clone https://github.com/ANDERSOUNDZ/DOCKER_TEST1.git
+
 cd DOCKER_TEST1
 
 Levantar los Servicios
@@ -33,11 +34,12 @@ Servicios Desplegados
 
 Una vez que Docker termine el proceso, podrás acceder a los siguientes servicios:
 
-ServicioURL / AccesoPuerto Descripción
-Frontend http://localhost:4200/ Interfaz de Usuario (Angular)
-BackendSwagger http://localhost:9090/swagger-ui/index.html API
-pgAdmin http://localhost:5050/ Panel de Gestión de BD 
-Database localhost 5432 Motor PostgreSQL
+| Servicio      | URL / Acceso                                      | Puerto | Descripción                       |
+|---------------|---------------------------------------------------|--------|-----------------------------------|
+| Frontend      | http://localhost:4200/                            | 4200   | Interfaz de Usuario (Angular)     |
+| BackendSwagger| http://localhost:9090/swagger-ui/index.html       | 9090   | API                               |
+| pgAdmin       | http://localhost:5050/                            | 5050   | Panel de Gestión de BD            |
+| Database      | localhost 5432                                    | 5432   | Motor PostgreSQL                  |
 
 Configuración de pgAdmin (Visualizar BD)
 
