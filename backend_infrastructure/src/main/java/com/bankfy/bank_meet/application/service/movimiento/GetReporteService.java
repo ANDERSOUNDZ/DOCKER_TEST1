@@ -5,6 +5,7 @@ import com.bankfy.bank_meet.application.ports.output.cliente.ClientePersistenceP
 import com.bankfy.bank_meet.application.ports.output.movimiento.MovimientoPersistencePort;
 import com.bankfy.bank_meet.domain.models.cliente.Cliente;
 import com.bankfy.bank_meet.domain.models.movimiento.Movimiento;
+import com.bankfy.bank_meet.infrastructure.adapters.input.dtos.movimiento.MovimientoReporteItemDTO;
 import com.bankfy.bank_meet.infrastructure.adapters.input.dtos.movimiento.ReporteEstadoCuentaDTO;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfPTable;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -44,10 +46,24 @@ public class GetReporteService implements GetReporteUseCase {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         String pdfBase64 = generarPdfBase64(movs, cliente.getNombre(), inicio, fin);
+
+        List<MovimientoReporteItemDTO> movimientosDto = movs.stream()
+                .map(m -> MovimientoReporteItemDTO.builder()
+                        .fecha(m.getFecha())
+                        .cliente(cliente.getNombre())
+                        .numeroCuenta(m.getCuenta().getNumeroCuenta())
+                        .tipo(m.getCuenta().getTipoCuenta())
+                        .saldoInicial(m.getSaldoAnterior())
+                        .estado(m.getCuenta().getEstado())
+                        .valor(m.getValor()) 
+                        .saldoDisponible(m.getSaldo())
+                        .build())
+                .collect(Collectors.toList());
+
         return ReporteEstadoCuentaDTO.builder()
                 .cliente(cliente.getNombre())
                 .rangoFechas(inicio.toLocalDate() + " a " + fin.toLocalDate())
-                .movimientos(movs)
+                .movimientos(movimientosDto)
                 .totalCreditos(totalCreditos)
                 .totalDebitos(totalDebitos)
                 .pdfBase64(pdfBase64)
